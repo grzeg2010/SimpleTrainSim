@@ -82,3 +82,43 @@ CMakeLists.txt.user*
 .uic/
 /build*/
 /.qtcreator/
+
+## Core LaTeX auxiliary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.ist
+*.lof
+*.log
+*.lot
+*.maf
+*.mtc
+*.mtc0
+*.nav
+*.nlo
+*.out
+*.pdfsync
+*.snm
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.vrb
+
+## Biber / BibTeX auxiliary files
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+
+## PythonTeX / Minted temporary files (if used for code highlighting)
+*.pytxcode
+_minted*/
+
+## PDF
+*.pdf

@@ -1,0 +1,90 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{parskip} % disable paragraph insets
+\usepackage{titlesec} % for altering title headers
+\usepackage[titletoc]{appendix} % for word "appendix" in the table of contents
+\usepackage{graphicx} % for UML diagrams
+\usepackage{verbatim} % for appending GNU GPL3 license
+
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries\raggedright}{\thechapter. }{0pt}{\huge}
+\titlespacing*{\chapter}{0pt}{-30pt}{20pt}
+
+% Custom title page
+\newcommand{\makecustomtitle}[4]{%
+    \newgeometry{margin=1.5in}
+    \thispagestyle{empty}
+    
+    \begin{center}
+        \vspace*{\fill}
+        
+        {\Huge \textbf{#1}} \\[1em]       % Title (28pt)
+        {\Large \textbf{#2}} \\[2em]      % Short description (24pt)
+        
+        {\large Version #3} \\[1.5em]     % Version (16pt)
+        
+        {\large \today} \\[3em]           % Date
+        
+        {\large #4}                       % Author (14pt)
+        
+        \vspace*{\fill}
+    \end{center}
+    
+    \clearpage
+    \restoregeometry
+    
+    \tableofcontents
+    \clearpage
+}
+
+\begin{document}
+
+\makecustomtitle
+  {Simple Train Sim} % Title
+  {Train HUD}        % Short description
+  {0.1}              % Version
+  {Grzegorz Śnieżko} % Author
+
+\chapter{Application requirements}
+\section{Short description}
+Simple QT application that only shows train HUD.
+
+\section{Detailed requirements}
+\begin{enumerate}
+    \item Application represents GUI which you could see on train HUD. It displays: speed in km/h, engine force, throttle setting, wheel slip warning, braking force in bars, brake setting, track gradient. Eventually acceleration
+    \item In order to move locomotive has to fight track friction, rolling resistance, wind resistance and gravity.
+    \item Cutting off the engine power at high speed should let the train roll and gradually slow down because of resistance forces.
+    \item Starting resistance is higher (static friction).
+    \item Too much force can cause the wheel to slide. Bad weather conditions can decrease the amount of force needed for wheels to start slipping.
+    \item Gravity itself should be able to push the locomotive at the appropriate gradient.
+    \item Wind resistance increases with speed. Every train holds a value of its aerodynamic efficiency.
+    \item User will have to react to deadman's switch every few minutes dependant on train model.
+\end{enumerate}
+
+\chapter{Use Case Diagram}
+\section{Actors}
+\begin{itemize}
+    \item \textbf{train} -- example, drives
+    \item \textbf{user} -- controls train
+\end{itemize}
+
+\begin{appendices}
+
+\chapter{GNU General Public License v3.0}
+\label{app:license}
+
+This software is released under the GNU General Public License v3.0. 
+The full text of the license is included below.
+
+\begin{singlespace}
+    \small
+    \verbatiminput{../LICENSE}
+\end{singlespace}
+
+\end{appendices}
+\end{document}
