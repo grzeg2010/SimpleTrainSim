@@ -4,6 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 
+\usepackage{enumitem} % smaller distance between list items
 \usepackage{geometry}
 \usepackage{setspace}
 \usepackage{parskip} % disable paragraph insets
@@ -50,21 +51,68 @@
   {0.1}              % Version
   {Grzegorz Śnieżko} % Author
 
-\chapter{Application requirements}
-\section{Short description}
-Simple QT application that only shows train HUD.
+\chapter{Domain description}
+\section{Product vision}
+Simple Qt application designed to simulate realistic train physics and display coresponding data in GUI. GUI is styled after train Head-Up Display (HUD).
 
 \section{Detailed requirements}
 \begin{enumerate}
-    \item Application represents GUI which you could see on train HUD. It displays: speed in km/h, engine force, throttle setting, wheel slip warning, braking force in bars, brake setting, track gradient. Eventually acceleration
-    \item In order to move locomotive has to fight track friction, rolling resistance, wind resistance and gravity.
-    \item Cutting off the engine power at high speed should let the train roll and gradually slow down because of resistance forces.
-    \item Starting resistance is higher (static friction).
-    \item Too much force can cause the wheel to slide. Bad weather conditions can decrease the amount of force needed for wheels to start slipping.
-    \item Gravity itself should be able to push the locomotive at the appropriate gradient.
-    \item Wind resistance increases with speed. Every train holds a value of its aerodynamic efficiency.
-    \item User will have to react to deadman's switch every few minutes dependant on train model.
+    \item \textbf{Telemetry display:} GUI represents train HUD. It displays: 
+    speed in km/h, engine force, throttle setting, wheel slip warning, braking force in bars, brake setting, track gradient, eventually acceleration. 
+    Indicators react to user input and train condition in real time.
+    \item \textbf{Environmental resistance:} In order to move locomotive must overcome 
+    environmental drag. 
+    Total running resistance ($R$) is calculated using \textbf{Davis equation}:
+        \begin{equation}
+            R = A + Bv + Cv^2
+        \end{equation}
+    where 
+    \begin{itemize}[noitemsep]
+        \item $v$ is the train speed,
+        \item $A$ is mechanical rolling resistance,
+        \item $B$ is dynamic mechanical forces (e.g., axle friction),
+        \item $C$ is aerodynamic drag coefficiency.
+    \end{itemize}
+    \item \textbf{Coasting:} Cutting off the engine power at high speed should let the train roll and gradually slow down because of resistance forces.
+    \item \textbf{Static friction:} Starting resistance is modeled higher than dynamic resistance
+    due to static friction mechanics.
+    \item \textbf{Adhesion and weather:} Excesive engine force can cause the wheel slip. 
+    Bad weather conditions can decrease the amount of force needed for wheels to start slipping.
+    \item \textbf{Gravitational influence:} Gravity influences the train based on the current track gradient.
+    It can accelerate or deaccelerate the train.
+    \item \textbf{Aerodynamics:} Wind resistance increases non-linearly with speed. 
+    Every train profile holds a value of its aerodynamic efficiency.
+    \item \textbf{Safety systems:} User must periodicaly interact with deadman's switch. 
+    Time between safety warnings depends on train model.
 \end{enumerate}
+
+\chapter{Non-functional requirements}
+\section{Performance}
+\begin{itemize}
+    \item Control input latency should be less than 50ms.
+    \item Application should maintain a stable memory footprint without memory leaks.
+\end{itemize}
+\section{Reliability}
+\begin{itemize}
+    \item User should be able to complete the route without crashes and then change it.
+    \item Application should exit only on user command.
+\end{itemize}
+\section{Usability}
+\begin{itemize}
+    \item Application should provide GUI with mouse control and keyboard shortcuts.
+    \item GUI should meet the WCAG standards at least at the AA level, preferably AAA.
+\end{itemize}
+\section{Portability}
+\begin{itemize}
+    \item Application should run on most popular PC operating systems: Windows, macOS, Linux
+\end{itemize}
+\section{Maintainability \& Extensibility}
+\begin{itemize}
+    \item Code should be self-documenting with intuitive naming conventions.
+    \item Code should follow object-oriented programming rules to ensure modularity.
+    \item User should have the ability to add different routes and vehicles by providing only their data. They should be persistent.
+\end{itemize}
+
 
 \chapter{Use Case Diagram}
 \section{Actors}
