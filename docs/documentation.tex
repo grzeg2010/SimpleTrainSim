@@ -6,6 +6,7 @@
 
 \usepackage{enumitem} % smaller distance between list items
 \usepackage{geometry}
+\usepackage{hyperref}
 \usepackage{setspace}
 \usepackage{parskip} % disable paragraph insets
 \usepackage{titlesec} % for altering title headers
@@ -17,7 +18,7 @@
 \titlespacing*{\chapter}{0pt}{-30pt}{20pt}
 
 % Custom title page
-\newcommand{\makecustomtitle}[4]{%
+\newcommand{\makecustomtitle}[5]{%
     \newgeometry{margin=1.5in}
     \thispagestyle{empty}
     
@@ -34,6 +35,8 @@
         {\large #4}                       % Author (14pt)
         
         \vspace*{\fill}
+
+        {\large #5}                       % License
     \end{center}
     
     \clearpage
@@ -50,6 +53,7 @@
   {Train HUD}        % Short description
   {0.1}              % Version
   {Grzegorz Śnieżko} % Author
+  {GNU GPL v3.0}         % License
 
 \chapter{Domain description}
 \section{Product vision}
@@ -196,7 +200,8 @@ Simple Qt application designed to simulate realistic train physics and display c
 \chapter{GNU General Public License v3.0}
 \label{app:license}
 
-This software is released under the GNU General Public License v3.0. 
+This software is released under the \href{https://www.gnu.org/licenses/gpl-3.0.en.html#license-text}{GNU General Public License v3.0}. 
+Source code is available on \href{https://github.com/grzeg2010/SimpleTrainSim}{GitHub}.
 The full text of the license is included below.
 
 \begin{singlespace}
