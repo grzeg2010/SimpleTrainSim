@@ -4,7 +4,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 
-\usepackage{enumitem} % smaller distance between list items
+\usepackage{enumitem} % smaller distance between list items, automatic FR-xxx-000 enumeration
+\usepackage{fmtcount} % Provides \padzeroes
 \usepackage{geometry}
 \usepackage{hyperref}
 \usepackage{setspace}
@@ -46,6 +47,10 @@
     \clearpage
 }
 
+% Functional and non-functional requirements list auto-numerating IDs
+\DeclareRobustCommand{\reqLabel}[2]
+{\hspace{16pt}\textbullet\hspace{7pt}\bfseries#1-\padzeroes[3]{\decimal{#2}}:}
+
 \begin{document}
 
 \makecustomtitle
@@ -57,10 +62,10 @@
 
 \chapter{Domain description}
 \section{Product vision}
-Simple Qt application designed to simulate realistic train physics and display coresponding data in GUI. GUI is styled after train Head-Up Display (HUD).
+Simple Qt application designed to simulate realistic train physics and display corresponding data in GUI. GUI is styled after train Head-Up Display (HUD).
 
 \section{Detailed requirements}
-    \subsection{Environmental resistance}
+    \subsection{Environmental resistance} \label{sec:davis}
     In order to move locomotive must overcome environmental drag. 
     Total running resistance ($R$) is calculated using \textbf{Davis equation}:
         \begin{equation}
@@ -82,7 +87,7 @@ Simple Qt application designed to simulate realistic train physics and display c
     due to static friction mechanics.
 
     \subsection{Adhesion and weather}
-    Excesive engine force can cause the wheel slip. 
+    Excessive engine force can cause the wheel slip. 
     Bad weather conditions can decrease the amount of force needed for wheels to start slipping.
     
     \subsection{Gravitational influence}
@@ -99,9 +104,9 @@ Simple Qt application designed to simulate realistic train physics and display c
 
 \chapter{Functional requirements}
 \section{Graphical User Interface (GUI)}
-\begin{itemize}
-    \item \textbf{FR-GUI-001:} System must render GUI styled after train Head-Up Display (HUD).
-    \item \textbf{FR-GUI-002:} The HUD must display following data updated in real time:
+\begin{enumerate}[label=\reqLabel{FR-GUI}*, align=left]
+    \item System must render GUI styled after train Head-Up Display (HUD).
+    \item The HUD must display following data updated in real time:
     \begin{itemize}
         \item speed in $\mathrm{km/h}$, 
         \item engine force in $\mathrm{kN}$, 
@@ -112,15 +117,15 @@ Simple Qt application designed to simulate realistic train physics and display c
         \item track gradient in $\%$, 
         \item acceleration in $\mathrm{m/s^2}$
     \end{itemize} 
-    \item \textbf{FR-GUI-003:} Application must start in start menu with following options:
+    \item Application must start in start menu with following options:
     \begin{itemize}
         \item ride
         \item add route
         \item add train
         \item exit application
     \end{itemize}
-    \item \textbf{FR-GUI-004:} $Add route$ panel must let the user upload a JSON file with route height points.
-    \item \textbf{FR-GUI-005:} $Add train$ panel must display train creation wizzard. Some fields must allow the user to chose predefined values:
+    \item \textit{Add route} panel must let the user upload a JSON file with route height points.
+    \item \textit{Add train} panel must display train creation wizard. Some fields must allow the user to choose predefined values:
     \begin{itemize}
         \item engine type (electric, combustion with electric drive, combustion with direct drive)
         \item HUD layout
@@ -136,56 +141,74 @@ Simple Qt application designed to simulate realistic train physics and display c
         \item drag coefficiency
         \item engine power
     \end{itemize}
-\end{itemize}
+\end{enumerate}
 
 \section{Physics Simulation}
-\begin{itemize}
-    \item \textbf{FR-SIM-001:} The system must calculate total running resistance at every simulation frame using the Davis equation defined in section 1.2.1.
-    \item \textbf{FR-SIM-002:} The system must apply static friction to resistance calculation as long as the train speed is 0 $\mathrm{km/h}$
-    \item \textbf{FR-SIM-003:} The system must simulate coasting behaviour when the train is moving and current engine force is 0. Current coasting speed is altered by current resistance forces and gravitaional forces.
-    \item \textbf{FR-SIM-004:} The system must calculate the effects of gravity on train in real time based on current track gradient. Gravity will move the stopped train on a slope if no brakes are applied. During coasting uphill, the gravity will be slowing the train down.
-\end{itemize}
+\begin{enumerate}[label=\reqLabel{FR-SIM}*, align=left]
+    \item The system must calculate total running resistance at every simulation frame using the Davis equation defined in section~\ref{sec:davis}.
+    \item The system must apply static friction to resistance calculation as long as the train speed is 0~$\mathrm{km/h}$
+    \item The system must simulate coasting behaviour when the train is moving and current engine force is 0. Current coasting speed is altered by current resistance forces and gravitaional forces.
+    \item The system must calculate the effects of gravity on train in real time based on current track gradient. Gravity will move the stopped train on a slope if no brakes are applied. During coasting uphill, the gravity will be slowing the train down.
+\end{enumerate}
 
 \section{Environmental factors}
-\begin{itemize}
-    \item \textbf{FR-ENV-001:} Route is made of points that are 100 metres away from each other. Every point must hold the altitude value in metres above mean sea level.
-    \item \textbf{FR-ENV-002:} Current weather must affect maximum track adhesion level. Damp track must have lower adhesion. Icy track must have even lower adhesion level. Track must have the leaf coverage percentage which will also affect the adhesion.
-    \item \textbf{FR-ENV-003:} Train route must have at least one wind zone. Wind zone will hold two values:
+\begin{enumerate}[label=\reqLabel{FR-ENV}*, align=left]
+    \item Route is made of points that are 100 metres away from each other. Every point must hold the altitude value in metres above mean sea level.
+    \item Current weather must affect maximum track adhesion level. Damp track must have lower adhesion. Icy track must have even lower adhesion level. Track must have the leaf coverage percentage which will also affect the adhesion.
+    \item Train route must have at least one wind zone. Wind zone will hold two values:
     \begin{itemize}
-        \item wind speed in $\mathrm{m/s^2}$,
+        \item wind speed in $\mathrm{m/s}$,
         \item wind direction in degrees (0 to 360)
     \end{itemize}
-    Route will always point to the north (0 deg). Wind affects total runing resistance.
-\end{itemize}
+    Route will always point to the north (0 deg). Wind affects total running resistance.
+\end{enumerate}
+
+\section{Safety systems}
+\begin{enumerate}[label=\reqLabel{FR-SAF}*, align=left]
+    \item The train must maintain an active timer for deadman's switch.
+    \item The user can reset deadman's switch timer by pressing an appropriate button or keyboard shortcut.
+    \item The train must apply an emergency brake and cut the engine power if user doesn't manage to respond in appropriate time.
+    \item In order to release an emergency brake, user must:
+    \begin{enumerate}
+        \item respond to deadman's switch,
+        \item set the throttle position to neutral,
+        \item set the brake lever to emergency position
+    \end{enumerate}
+    When the combination is complete user can set the brake to release or drive position.
+\end{enumerate}
     
 
 
 \chapter{Non-functional requirements}
 \section{Performance}
-\begin{itemize}
+\begin{enumerate}[label=\reqLabel{NFR-PER}*, align=left]
     \item Control input latency should be less than 50ms.
     \item Application must maintain a stable memory footprint without memory leaks.
-\end{itemize}
+\end{enumerate}
+
 \section{Reliability}
-\begin{itemize}
+\begin{enumerate}[label=\reqLabel{NFR-REL}*, align=left]
     \item User must be able to complete the route without crashes and then change it.
     \item Application must exit only on user command.
-\end{itemize}
+\end{enumerate}
+
 \section{Usability}
-\begin{itemize}
+\begin{enumerate}[label=\reqLabel{NFR-USA}*, align=left]
     \item Application must provide GUI with mouse control and keyboard shortcuts.
     \item GUI must meet the WCAG standards at least at the AA level, preferably AAA.
-\end{itemize}
+\end{enumerate}
+
 \section{Portability}
-\begin{itemize}
+\begin{enumerate}[label=\reqLabel{NFR-POR}*, align=left]
     \item Application should run on most popular PC operating systems: Windows, macOS, Linux
-\end{itemize}
+\end{enumerate}
+
 \section{Maintainability \& Extensibility}
-\begin{itemize}
+\begin{enumerate}[label=\reqLabel{NFR-MNT}*, align=left]
     \item Code must be self-documenting with intuitive naming conventions.
     \item Code must follow object-oriented programming rules to ensure modularity.
     \item User must have the ability to add different routes and trains by providing only their data. Data must be persistent.
-\end{itemize}
+\end{enumerate}
 
 
 \chapter{Use Case Diagram}
