@@ -1,0 +1,59 @@
+@startuml
+
+namespace SimpleTrainSimCld {
+class Train {
+    weight
+    axles count
+    /speed
+    throttle
+    braking force
+}
+
+class HUD {
+    layout
+}
+
+abstract class Indicator {
+
+}
+
+class "Speed indicator" as speed_indicator {
+
+}
+
+class "Throttle indicator" as throttle_indicator {
+
+}
+
+class "Braking force indicator" as braking_force_indicator {
+
+}
+
+class Route {
+    /length
+}
+
+class "Route point" as route_point {
+    position
+    altitude
+    /slope
+}
+
+class Physics
+
+class Environment
+
+
+Train "1" *-- "*" HUD : displays >
+Train "*" -- "1" Route : rides on >
+
+HUD "1" *-- "3" Indicator : consists of >
+
+Indicator <|-- speed_indicator
+Indicator <|-- throttle_indicator
+Indicator <|-- braking_force_indicator
+
+Route "1" *-- "*" route_point : consists of >
+}
+
+@enduml

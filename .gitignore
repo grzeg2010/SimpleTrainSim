@@ -122,3 +122,7 @@ _minted*/
 
 ## PDF
 *.pdf
+
+## PlantUML exports
+docs/uml/*.png
+docs/uml/*.svg
