@@ -56,12 +56,8 @@
 Simple Qt application designed to simulate realistic train physics and display coresponding data in GUI. GUI is styled after train Head-Up Display (HUD).
 
 \section{Detailed requirements}
-\begin{enumerate}
-    \item \textbf{Telemetry display:} GUI represents train HUD. It displays: 
-    speed in km/h, engine force, throttle setting, wheel slip warning, braking force in bars, brake setting, track gradient, eventually acceleration. 
-    Indicators react to user input and train condition in real time.
-    \item \textbf{Environmental resistance:} In order to move locomotive must overcome 
-    environmental drag. 
+    \subsection{Environmental resistance}
+    In order to move locomotive must overcome environmental drag. 
     Total running resistance ($R$) is calculated using \textbf{Davis equation}:
         \begin{equation}
             R = A + Bv + Cv^2
@@ -73,34 +69,108 @@ Simple Qt application designed to simulate realistic train physics and display c
         \item $B$ is dynamic mechanical forces (e.g., axle friction),
         \item $C$ is aerodynamic drag coefficiency.
     \end{itemize}
-    \item \textbf{Coasting:} Cutting off the engine power at high speed should let the train roll and gradually slow down because of resistance forces.
-    \item \textbf{Static friction:} Starting resistance is modeled higher than dynamic resistance
+
+    \subsection{Coasting}
+    Cutting off the engine power at high speed must let the train roll and gradually slow down because of resistance forces.
+    
+    \subsection{Static friction}
+    Starting resistance is modeled higher than dynamic resistance
     due to static friction mechanics.
-    \item \textbf{Adhesion and weather:} Excesive engine force can cause the wheel slip. 
+
+    \subsection{Adhesion and weather}
+    Excesive engine force can cause the wheel slip. 
     Bad weather conditions can decrease the amount of force needed for wheels to start slipping.
-    \item \textbf{Gravitational influence:} Gravity influences the train based on the current track gradient.
+    
+    \subsection{Gravitational influence}
+    Gravity influences the train based on the current track gradient.
     It can accelerate or deaccelerate the train.
-    \item \textbf{Aerodynamics:} Wind resistance increases non-linearly with speed. 
+    
+    \subsection{Aerodynamics}
+    Wind resistance increases non-linearly with speed. 
     Every train profile holds a value of its aerodynamic efficiency.
-    \item \textbf{Safety systems:} User must periodicaly interact with deadman's switch. 
+    
+    \subsection{Safety systems}
+    User must periodicaly interact with deadman's switch. 
     Time between safety warnings depends on train model.
-\end{enumerate}
+
+\chapter{Functional requirements}
+\section{Graphical User Interface (GUI)}
+\begin{itemize}
+    \item \textbf{FR-GUI-001:} System must render GUI styled after train Head-Up Display (HUD).
+    \item \textbf{FR-GUI-002:} The HUD must display following data updated in real time:
+    \begin{itemize}
+        \item speed in $\mathrm{km/h}$, 
+        \item engine force in $\mathrm{kN}$, 
+        \item throttle setting in $\%$, 
+        \item wheel slip warning, 
+        \item braking force in $\mathrm{bars}$, 
+        \item brake setting in $\%$, 
+        \item track gradient in $\%$, 
+        \item acceleration in $\mathrm{m/s^2}$
+    \end{itemize} 
+    \item \textbf{FR-GUI-003:} Application must start in start menu with following options:
+    \begin{itemize}
+        \item ride
+        \item add route
+        \item add train
+        \item exit application
+    \end{itemize}
+    \item \textbf{FR-GUI-004:} $Add route$ panel must let the user upload a JSON file with route height points.
+    \item \textbf{FR-GUI-005:} $Add train$ panel must display train creation wizzard. Some fields must allow the user to chose predefined values:
+    \begin{itemize}
+        \item engine type (electric, combustion with electric drive, combustion with direct drive)
+        \item HUD layout
+        \item speed indicator design
+        \item throttle indicator design
+        \item brake indicator design
+        \item throttle lever
+        \item brake lever
+    \end{itemize}
+    Some fields will let the user to input their own values:
+    \begin{itemize}
+        \item locomotive weight
+        \item drag coefficiency
+        \item engine power
+    \end{itemize}
+\end{itemize}
+
+\section{Physics Simulation}
+\begin{itemize}
+    \item \textbf{FR-SIM-001:} The system must calculate total running resistance at every simulation frame using the Davis equation defined in section 1.2.1.
+    \item \textbf{FR-SIM-002:} The system must apply static friction to resistance calculation as long as the train speed is 0 $\mathrm{km/h}$
+    \item \textbf{FR-SIM-003:} The system must simulate coasting behaviour when the train is moving and current engine force is 0. Current coasting speed is altered by current resistance forces and gravitaional forces.
+    \item \textbf{FR-SIM-004:} The system must calculate the effects of gravity on train in real time based on current track gradient. Gravity will move the stopped train on a slope if no brakes are applied. During coasting uphill, the gravity will be slowing the train down.
+\end{itemize}
+
+\section{Environmental factors}
+\begin{itemize}
+    \item \textbf{FR-ENV-001:} Route is made of points that are 100 metres away from each other. Every point must hold the altitude value in metres above mean sea level.
+    \item \textbf{FR-ENV-002:} Current weather must affect maximum track adhesion level. Damp track must have lower adhesion. Icy track must have even lower adhesion level. Track must have the leaf coverage percentage which will also affect the adhesion.
+    \item \textbf{FR-ENV-003:} Train route must have at least one wind zone. Wind zone will hold two values:
+    \begin{itemize}
+        \item wind speed in $\mathrm{m/s^2}$,
+        \item wind direction in degrees (0 to 360)
+    \end{itemize}
+    Route will always point to the north (0 deg). Wind affects total runing resistance.
+\end{itemize}
+    
+
 
 \chapter{Non-functional requirements}
 \section{Performance}
 \begin{itemize}
     \item Control input latency should be less than 50ms.
-    \item Application should maintain a stable memory footprint without memory leaks.
+    \item Application must maintain a stable memory footprint without memory leaks.
 \end{itemize}
 \section{Reliability}
 \begin{itemize}
-    \item User should be able to complete the route without crashes and then change it.
-    \item Application should exit only on user command.
+    \item User must be able to complete the route without crashes and then change it.
+    \item Application must exit only on user command.
 \end{itemize}
 \section{Usability}
 \begin{itemize}
-    \item Application should provide GUI with mouse control and keyboard shortcuts.
-    \item GUI should meet the WCAG standards at least at the AA level, preferably AAA.
+    \item Application must provide GUI with mouse control and keyboard shortcuts.
+    \item GUI must meet the WCAG standards at least at the AA level, preferably AAA.
 \end{itemize}
 \section{Portability}
 \begin{itemize}
@@ -108,9 +178,9 @@ Simple Qt application designed to simulate realistic train physics and display c
 \end{itemize}
 \section{Maintainability \& Extensibility}
 \begin{itemize}
-    \item Code should be self-documenting with intuitive naming conventions.
-    \item Code should follow object-oriented programming rules to ensure modularity.
-    \item User should have the ability to add different routes and vehicles by providing only their data. They should be persistent.
+    \item Code must be self-documenting with intuitive naming conventions.
+    \item Code must follow object-oriented programming rules to ensure modularity.
+    \item User must have the ability to add different routes and trains by providing only their data. Data must be persistent.
 \end{itemize}
 
 
