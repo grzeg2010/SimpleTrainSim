@@ -1,5 +1,7 @@
 @startuml
 
+skinparam groupInheritance 2
+
 namespace SimpleTrainSimCld {
 class Train {
     weight
@@ -7,14 +9,32 @@ class Train {
     /speed
     throttle
     braking force
+    aerodynamic efficiency
 }
+
+abstract class Engine {
+    max power
+}
+
+class "Electric engine" as electric_engine {}
+
+class "Combustion engine" as combustion_engine {
+    fuel level
+}
+
+class "Electric drive CE" as ce_electric_drive {}
+
+class "Direct drive CE" as ce_direct_drive {}
 
 class HUD {
     layout
 }
 
 abstract class Indicator {
-
+    width
+    height
+    shape
+    resolution
 }
 
 class "Speed indicator" as speed_indicator {
@@ -22,14 +42,26 @@ class "Speed indicator" as speed_indicator {
 }
 
 class "Throttle indicator" as throttle_indicator {
-
+    type {setting, force}
 }
 
-class "Braking force indicator" as braking_force_indicator {
+class "Braking indicator" as braking_indicator {
+    type {setting, force}
+}
 
+class "Wheelslip indicator" as wheelslip_indicator {}
+
+class "Gradient indicator" as gradient_indicator {}
+
+class "Acceleration indicator" as acceleration_indicator{}
+
+class "Deadman's switch" as deadmans_switch {
+    interval
+    state {vigilant, triggered}
 }
 
 class Route {
+    {static} rotation = 0deg
     /length
 }
 
@@ -37,23 +69,85 @@ class "Route point" as route_point {
     position
     altitude
     /slope
+    /adhesion
 }
 
-class Physics
+class "Physical force" as physical_force
 
-class Environment
+class Gravity {
+    {static} acceleration = 9.81m/s<sup>2</sup>
+}
 
+class "Aerodynamic drag" as aerodynamic_drag {
+    {static} drag per speed modifier
+}
 
-Train "1" *-- "*" HUD : displays >
-Train "*" -- "1" Route : rides on >
+class "Mechanical resistance" as mechanical_resistance {
+    min bearing friction
+    max bearing friction
+}
 
-HUD "1" *-- "3" Indicator : consists of >
+class "Rolling resistance" as rolling_resistance {}
+
+class "Engine force" as engine_force {
+    current power
+}
+
+class Environment {
+    /adhesion modifier
+}
+
+class Dampness {
+    track dampness
+}
+
+class Temperature {
+    temperature
+}
+
+class Wind {
+    strength
+    direction
+}
+
+class Leaves {
+    leaf coverage
+}
+
+Train "1" *-- "1" HUD : displays >
+Train "1" *-up- "1" deadmans_switch : secures <
+Train "1" *-up- "1" Engine : powers <
+Train "*" -right- "1" Route : rides on >
+Train "1" -left- "*" physical_force : impacts <
+HUD "1" *-- "*" Indicator : consists of >
 
 Indicator <|-- speed_indicator
 Indicator <|-- throttle_indicator
-Indicator <|-- braking_force_indicator
+Indicator <|-- braking_indicator
+Indicator <|-- wheelslip_indicator
+Indicator <|-- gradient_indicator
+Indicator <|-- acceleration_indicator : {complete,disjoint}
 
-Route "1" *-- "*" route_point : consists of >
+Engine <|-up- electric_engine
+Engine <|-up- combustion_engine
+combustion_engine <|-- ce_electric_drive
+combustion_engine <|-- ce_direct_drive : {complete, disjoint}
+
+Route "1" *-down- "*" route_point : consists of >
+Route "1" -right- "*" Environment : impacts <
+route_point "1" -right- "*" Environment  : starting point <
+route_point "1" -right- "*" Environment : ending point <
+
+Environment <|-- Dampness : {complete,disjoint}
+Environment <|-- Temperature
+Environment <|-- Wind
+Environment <|-- Leaves
+
+physical_force <|-- Gravity : {complete,disjoint}
+physical_force <|-- aerodynamic_drag
+physical_force <|-- rolling_resistance
+physical_force <|-- mechanical_resistance
+physical_force <|-- engine_force
 }
 
 @enduml
