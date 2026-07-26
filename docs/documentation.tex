@@ -10,6 +10,7 @@
 \usepackage{hyperref}
 \usepackage{setspace}
 \usepackage{parskip} % disable paragraph insets
+\usepackage{pdflscape}
 \usepackage{titlesec} % for altering title headers
 \usepackage[titletoc]{appendix} % for word "appendix" in the table of contents
 \usepackage{graphicx} % for UML diagrams
@@ -66,7 +67,7 @@ Simple Qt application designed to simulate realistic train physics and display c
 
 \section{Detailed requirements}
     \subsection{Environmental resistance} \label{sec:davis}
-    In order to move locomotive must overcome environmental drag. 
+    In order to move, the locomotive must overcome environmental drag. 
     Total running resistance ($R$) is calculated using \textbf{Davis equation}:
         \begin{equation}
             R = A + Bv + Cv^2
@@ -82,9 +83,9 @@ Simple Qt application designed to simulate realistic train physics and display c
     \subsection{Coasting}
     Cutting off the engine power at high speed must let the train roll and gradually slow down because of resistance forces.
     
-    \subsection{Static friction}
+    \subsection{Bearing friction}
     Starting resistance is modeled higher than dynamic resistance
-    due to static friction mechanics.
+    due to bearing/axle friction mechanics.
 
     \subsection{Adhesion and weather}
     Excessive engine force can cause the wheel slip. 
@@ -146,7 +147,7 @@ Simple Qt application designed to simulate realistic train physics and display c
 \section{Physics Simulation}
 \begin{enumerate}[label=\reqLabel{FR-SIM}*, align=left]
     \item The system must calculate total running resistance at every simulation frame using the Davis equation defined in section~\ref{sec:davis}.
-    \item The system must apply static friction to resistance calculation as long as the train speed is 0~$\mathrm{km/h}$
+    \item The system must apply bearing friction to resistance calculation as long as the train speed is 0~$\mathrm{km/h}$
     \item The system must simulate coasting behaviour when the train is moving and current engine force is 0. Current coasting speed is altered by current resistance forces and gravitaional forces.
     \item The system must calculate the effects of gravity on train in real time based on current track gradient. Gravity will move the stopped train on a slope if no brakes are applied. During coasting uphill, the gravity will be slowing the train down.
 \end{enumerate}
@@ -210,7 +211,7 @@ Simple Qt application designed to simulate realistic train physics and display c
     \item User must have the ability to add different routes and trains by providing only their data. Data must be persistent.
 \end{enumerate}
 
-
+\newgeometry{margin=0.3in}
 \chapter{Use Case Diagram}
 \section{Actors}
 \begin{itemize}
@@ -218,16 +219,19 @@ Simple Qt application designed to simulate realistic train physics and display c
     \item \textbf{user} -- controls train
 \end{itemize}
 
-\chapter{Class Diagrams}
-\section{Conceptual Class Diagram}
+\begin{landscape}
+\chapter{Conceptual Class Diagram}
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth]{uml/conceptualClassDiagram.png}
+    \includegraphics[width=0.96\textwidth]{uml/conceptualClassDiagram.png}
     \caption{SimpleTrainSim Conceptual Class Diagram}
     \label{fig:conceptual}
 \end{figure}
 
-\section{Design Class Diagram}
+
+\chapter{Design Class Diagram}
+\end{landscape}
+\restoregeometry
 
 \begin{appendices}
 
