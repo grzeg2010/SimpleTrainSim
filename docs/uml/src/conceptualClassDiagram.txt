@@ -1,5 +1,6 @@
 @startuml
 
+!pragma ratio 0.6
 skinparam groupInheritance 2
 
 namespace SimpleTrainSimCld {

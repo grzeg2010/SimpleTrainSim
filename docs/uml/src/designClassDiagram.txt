@@ -1,0 +1,200 @@
+@startuml DesignCLD_Overview
+skinparam groupInheritance 2
+
+namespace QtCore [[Accounting_Diagram.png]] {
+    class QObject << (F, #2CDE85) Framework >>
+}
+
+namespace SimpleTrainSimCld {
+    namespace Train {
+        class Train
+    }
+
+    namespace UI {
+        class HUD
+    }
+
+    namespace Route {
+        class Route
+    }
+
+    namespace Physics {
+        class "Physical force" as physical_force
+    }
+
+    SimpleTrainSimCld.Train.Train "1" -left-  "*" SimpleTrainSimCld.Physics.physical_force : impacts <
+    SimpleTrainSimCld.Train.Train "1" *-down- "1" SimpleTrainSimCld.UI.HUD : displays >
+    SimpleTrainSimCld.Train.Train "*" -right- "1" SimpleTrainSimCld.Route.Route : rides on >
+
+    SimpleTrainSimCld.Train.Train            -up-|> QtCore.QObject
+    SimpleTrainSimCld.UI.HUD                 -up-|> QtCore.QObject
+    SimpleTrainSimCld.Route.Route            -up-|> QtCore.QObject
+    SimpleTrainSimCld.Physics.physical_force -up-|> QtCore.QObject
+}
+@enduml
+
+@startuml DesignCLD_Train
+skinparam groupInheritance 2
+
+namespace SimpleTrainSimCld.Train {
+    class Train {
+        - weight : int
+        - axles_count : int
+        - /speed : double
+        - throttle : double
+        - braking force : double
+        - aerodynamic efficiency : double
+    }
+
+    abstract class Engine {
+        - max_power : double
+    }
+
+    class "Electric engine" as electric_engine {}
+
+    class "Combustion engine" as combustion_engine {
+        - fuel_level : double
+    }
+
+    class "Electric drive CE" as ce_electric_drive {}
+
+    class "Direct drive CE" as ce_direct_drive {}
+
+    class "Deadman's switch" as deadmans_switch {
+        - interval : int
+        - state {vigilant, triggered}
+
+        + acknowledge()
+    }
+
+    Train "1" *-up- "1" deadmans_switch : secures <
+    Train "1" *-up- "1" Engine : powers <
+    Engine <|-up- electric_engine
+    Engine <|-up- combustion_engine
+    combustion_engine <|-- ce_electric_drive
+    combustion_engine <|-- ce_direct_drive : {complete, disjoint}
+}
+@enduml
+
+@startuml DesignCLD_UI
+skinparam groupInheritance 2
+namespace SimpleTrainSimCld.UI {
+    class HUD {
+        - layout : int
+    }
+
+    abstract class Indicator {
+        - width : int
+        - height : int
+        - shape : int
+        - resolution : int
+    }
+
+    class "Speed indicator" as speed_indicator {
+
+    }
+
+    class "Throttle indicator" as throttle_indicator {
+        - type {setting, force}
+    }
+
+    class "Braking indicator" as braking_indicator {
+        - type {setting, force}
+    }
+
+    class "Wheelslip indicator" as wheelslip_indicator {}
+
+    class "Gradient indicator" as gradient_indicator {}
+
+    class "Acceleration indicator" as acceleration_indicator{}
+
+    HUD "1" *-- "*" Indicator : consists of >
+
+    Indicator <|-- speed_indicator
+    Indicator <|-- throttle_indicator
+    Indicator <|-- braking_indicator
+    Indicator <|-- wheelslip_indicator
+    Indicator <|-- gradient_indicator
+    Indicator <|-- acceleration_indicator : {complete,disjoint}
+}
+@enduml
+
+@startuml DesignCLD_Route
+skinparam groupInheritance 2
+namespace SimpleTrainSimCld.Route {
+    class Route {
+        - {static} rotation = 0deg : int
+        - /length : int
+    }
+
+    class "Route point" as route_point {
+        - position : int
+        - altitude : int
+        - /slope : double
+        - /adhesion : double
+    }
+
+    class Environment {
+        - /adhesion_modifier : double
+    }
+
+    class Dampness {
+        - track_dampness : int {0-100}
+    }
+
+    class Temperature {
+        - temperature : double
+    }
+
+    class Wind {
+        - strength : int
+        - direction : int
+    }
+
+    class Leaves {
+        - leaf_coverage : int {0-100}
+    }
+
+    Route "1" *-down- "*" route_point : consists of >
+    Route "1" -right- "*" Environment : impacts <
+    route_point "1" -right- "*" Environment  : starting point <
+    route_point "1" -right- "*" Environment : ending point <
+
+    Environment <|-- Dampness : {complete,disjoint}
+    Environment <|-- Temperature
+    Environment <|-- Wind
+    Environment <|-- Leaves
+}
+@enduml
+
+@startuml DesignCLD_Physics
+skinparam groupInheritance 2
+namespace SimpleTrainSimCld.Physics {
+    class "Physical force" as physical_force
+
+    class Gravity {
+        - {static} acceleration = 9.81m/s<sup>2</sup> : double
+    }
+
+    class "Aerodynamic drag" as aerodynamic_drag {
+        - {static} drag_per_speed_modifier : double
+    }
+
+    class "Mechanical resistance" as mechanical_resistance {
+        - min_bearing_friction : double
+        - max_bearing_friction : double
+    }
+
+    class "Rolling resistance" as rolling_resistance {}
+
+    class "Engine force" as engine_force {
+        - current_power : int
+    }
+
+    physical_force <|-- Gravity : {complete,disjoint}
+    physical_force <|-- aerodynamic_drag
+    physical_force <|-- rolling_resistance
+    physical_force <|-- mechanical_resistance
+    physical_force <|-- engine_force
+}
+@enduml

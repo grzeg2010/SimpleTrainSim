@@ -16,7 +16,7 @@
 \usepackage{graphicx} % for UML diagrams
 \usepackage{verbatim} % for appending GNU GPL3 license
 
-\titleformat{\chapter}[hang]{\normalfont\huge\bfseries\raggedright}{\thechapter. }{0pt}{\huge}
+\titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter. }{0pt}{\huge}
 \titlespacing*{\chapter}{0pt}{-30pt}{20pt}
 
 % Custom title page
@@ -211,7 +211,6 @@ Simple Qt application designed to simulate realistic train physics and display c
     \item User must have the ability to add different routes and trains by providing only their data. Data must be persistent.
 \end{enumerate}
 
-\newgeometry{margin=0.3in}
 \chapter{Use Case Diagram}
 \section{Actors}
 \begin{itemize}
@@ -219,20 +218,53 @@ Simple Qt application designed to simulate realistic train physics and display c
     \item \textbf{user} -- controls train
 \end{itemize}
 
+\newgeometry{margin=-1in}
 \begin{landscape}
+\titlespacing*{\chapter}{90pt}{60pt}{0pt}
 \chapter{Conceptual Class Diagram}
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.96\textwidth]{uml/conceptualClassDiagram.png}
+    \includegraphics[width=28.5cm]{uml/conceptualClassDiagram.png}
     \caption{SimpleTrainSim Conceptual Class Diagram}
     \label{fig:conceptual}
 \end{figure}
 
 
 \chapter{Design Class Diagram}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{uml/DesignCLD_Overview.png}
+    \caption{Design CLD - Overview}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=16cm]{uml/DesignCLD_Train.png}
+    \caption{Design CLD - Train}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=28.5cm]{uml/DesignCLD_UI.png}
+    \caption{Design CLD - UI}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{uml/DesignCLD_Route.png}
+    \caption{Design CLD - Route}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=28.5cm]{uml/DesignCLD_Physics.png}
+    \caption{Design CLD - Physics}
+\end{figure}
+
 \end{landscape}
 \restoregeometry
 
+\titlespacing*{\chapter}{0pt}{-30pt}{20pt}
 \begin{appendices}
 
 \chapter{GNU General Public License v3.0}
