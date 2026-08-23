@@ -1,7 +1,7 @@
 @startuml
 state Off
 state Idle
-state Coasting
+state Coasting : Doesn't burn fuel
 state Powering
 
 Off --> Idle

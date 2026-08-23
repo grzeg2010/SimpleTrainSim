@@ -214,9 +214,19 @@ Simple Qt application designed to simulate realistic train physics and display c
 \chapter{Use Case Diagram}
 \section{Actors}
 \begin{itemize}
-    \item \textbf{train} -- example, drives
-    \item \textbf{user} -- controls train
+    \item \textbf{Driver} -- controls train through interface
+    \item \textbf{Deadman's switch} -- safety system, controls train directly
+    \item \textbf{Train} -- physical actor, moves
+    \item \textbf{Gravity} -- physical force, affects train speed
+    \item \textbf{Environment} -- sum of physical resistance forces
 \end{itemize}
+\begin{figure}[htbp]
+    \centering
+    \vspace*{-2cm}
+    \hspace*{-2.5cm}
+    \includegraphics[width=20cm]{uml/useCaseDiagram.png}
+    \caption{Use Case Diagram}
+\end{figure}
 
 \newgeometry{margin=-1in}
 \begin{landscape}

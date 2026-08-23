@@ -1,0 +1,58 @@
+@startuml
+!pragma ratio 1.1
+
+<style>
+    .system {
+        LineColor: green;
+        LineStyle: 4-4;
+    }
+</style>
+
+rectangle SimpleTrainSim <<system>> {
+    together {
+        usecase throttle as "Set throttle"
+        usecase engine_power as "Set engine power"
+        throttle ..> engine_power : <<include>>
+    }
+
+    together {
+        usecase brake_lever as "Set brake lever"
+        usecase brake_power as "Set braking power"
+        brake_lever ..> brake_power : <<include>>
+    }
+
+    usecase Move
+    engine_power ..> Move : <<extends>>
+    brake_power ..> Move : <<extends>>
+
+    usecase gravity_pull as "Gravitaional pull"
+    usecase resistance as "Add resistance"
+    Move ..> gravity_pull : <<include>>
+    Move ..> resistance : <<include>>
+}
+
+together {
+    actor Driver
+    actor deadmans_switch as "Deadman's switch"
+    actor Train
+}
+deadmans_switch -[hidden]up- Driver
+deadmans_switch -[hidden]down- Train
+
+Driver -> throttle
+Driver -> brake_lever
+
+deadmans_switch -> engine_power
+deadmans_switch -> brake_power
+
+Train -> Move
+
+together {
+    actor Gravity
+    actor Environment   
+}
+Gravity -[hidden]down- Environment
+Gravity --> gravity_pull
+Environment --> resistance
+
+@enduml
