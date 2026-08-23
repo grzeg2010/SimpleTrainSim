@@ -1,0 +1,34 @@
+@startuml
+
+participant System
+actor Driver
+control Throttle
+participant Engine
+control brake_lever as "Brake lever"
+participant Brake
+
+group Deadman's switch
+    System -> Engine : Cut-off power
+    System -> Engine : Lock
+    System -> Brake : Activate full power
+    System -> Brake : Lock
+end
+
+group User
+    System -> Driver : Notify
+    Driver -> System : Acknowledge
+
+    Driver -> Throttle : Set neutral position
+    Throttle -> System : OK
+    Driver -> brake_lever : Set max position
+    Driver -> brake_lever : Set neutral position
+    brake_lever -> System : OK
+end
+
+group Deadman's switch
+    System -> Throttle : Unlock
+    System -> Brake : Unlock
+    System -> Brake : Release
+end
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+state Off
+state Idle
+state Coasting
+state Powering
+
+Off --> Idle
+Idle --> Off
+
+Coasting --> Idle
+
+Idle --> Powering
+Powering -> Coasting
+@enduml

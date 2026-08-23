@@ -265,8 +265,37 @@ Simple Qt application designed to simulate realistic train physics and display c
 
 \end{landscape}
 \restoregeometry
-
 \titlespacing*{\chapter}{0pt}{-30pt}{20pt}
+
+\chapter{Dynamic analysis}
+\section{State diagrams}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[height=15cm]{uml/stateBrake.png}
+    \caption{State diagram - brake}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \hspace*{-1.5cm}
+    \includegraphics[width=18cm]{uml/stateDeadmansSwitch.png}
+    \caption{State diagram - deadman's switch}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics{uml/stateEngine.png}
+    \caption{State diagram - engine}
+\end{figure}
+
+\section{Sequence diagrams}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=15cm]{uml/sequenceEmergencyBrakeReset.png}
+    \caption{Sequence diagram - emergency brake}
+    \vspace*{-3cm}
+\end{figure}
+
 \begin{appendices}
 
 \chapter{GNU General Public License v3.0}

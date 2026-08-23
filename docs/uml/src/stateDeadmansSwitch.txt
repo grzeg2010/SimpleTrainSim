@@ -1,0 +1,18 @@
+@startuml
+skinparam stateDiagramEdgeLabelStyle node
+
+state Disabled
+state Vigilant {
+    state Quiet
+    state Warning
+}
+state Triggered : Activates emergency brakes
+
+Disabled --> Warning : Train power on
+
+Quiet -> Warning : Idle for 80s
+Quiet --> Disabled : Train power off
+
+Warning -> Quiet : Acknowledged
+Warning -> Triggered : Idle for 10s
+@enduml

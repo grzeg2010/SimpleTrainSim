@@ -1,0 +1,18 @@
+@startuml
+state Release
+state Neutral
+state Operational
+state Emergency
+state Locked
+
+Release --> Neutral : Lever released
+Neutral --> Release : Lever pushed
+
+Neutral --> Operational
+Operational --> Neutral
+
+Operational --> Emergency
+Emergency --> Locked
+Locked --> Neutral : Reset procedure
+
+@enduml
