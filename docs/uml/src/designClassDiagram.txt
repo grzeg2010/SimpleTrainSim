@@ -1,4 +1,5 @@
 @startuml DesignCLD_Overview
+!pragma ratio 0.6
 skinparam groupInheritance 2
 
 namespace QtCore [[Accounting_Diagram.png]] {
@@ -34,6 +35,7 @@ namespace SimpleTrainSimCld {
 @enduml
 
 @startuml DesignCLD_Train
+!pragma ratio 0.6
 skinparam groupInheritance 2
 
 namespace SimpleTrainSimCld.Train {
@@ -41,31 +43,58 @@ namespace SimpleTrainSimCld.Train {
         - weight : int
         - axles_count : int
         - /speed : double
-        - throttle : double
-        - braking force : double
-        - aerodynamic efficiency : double
+        - throttle_pos : double
+        - brake_lever_pos : int
+        - /braking_force : double
+        - aerodynamic_efficiency : double
+
+        + get_weight() : int
+        + get_axles_count() : int
+        + get_speed() : double
+        + change_power(throttle_lever_pos) : void
+        + change_brake(brake_lever_pos) : void
     }
 
     abstract class Engine {
         - max_power : double
+        - /current_power : double
+
+        + calculate_power(throttle_lever_pos) : double
     }
 
     class "Electric engine" as electric_engine {}
 
     class "Combustion engine" as combustion_engine {
         - fuel_level : double
+        - max_force_fuel_burning : double
+
+        + get_fuel() : double
+        + add_fuel(ammount) : void
+        + burn_fuel() : void
     }
 
     class "Electric drive CE" as ce_electric_drive {}
 
-    class "Direct drive CE" as ce_direct_drive {}
+    class "Direct drive CE" as ce_direct_drive {
+        - max_torque : double
+        - /current_torque : double
+        + calculate_torque() : double
+    }
 
     class "Deadman's switch" as deadmans_switch {
         - interval : int
-        - state {vigilant, triggered}
+        - state : DmSwitchState
 
-        + acknowledge()
+        - count() : void
+        - activate_brakes() : void
+        + acknowledge() : void
     }
+
+    enum DmSwitchState {
+        VIGILANT
+        TRIGGERED
+    }
+    DmSwitchState .. deadmans_switch
 
     Train "1" *-up- "1" deadmans_switch : secures <
     Train "1" *-up- "1" Engine : powers <
@@ -77,10 +106,13 @@ namespace SimpleTrainSimCld.Train {
 @enduml
 
 @startuml DesignCLD_UI
+!pragma ratio 0.6
 skinparam groupInheritance 2
 namespace SimpleTrainSimCld.UI {
     class HUD {
         - layout : int
+
+        + draw() : void
     }
 
     abstract class Indicator {
@@ -88,19 +120,28 @@ namespace SimpleTrainSimCld.UI {
         - height : int
         - shape : int
         - resolution : int
+
+        + get_value() : void
     }
 
     class "Speed indicator" as speed_indicator {
-
+        - current_speed : double
     }
 
     class "Throttle indicator" as throttle_indicator {
-        - type {setting, force}
+        - type : IndicatorType
     }
 
     class "Braking indicator" as braking_indicator {
-        - type {setting, force}
+        - type : IndicatorType
     }
+
+    enum IndicatorType {
+        LEVER_SETTING
+        FORCE
+    }
+    IndicatorType .. throttle_indicator
+    IndicatorType .. braking_indicator
 
     class "Wheelslip indicator" as wheelslip_indicator {}
 
@@ -120,39 +161,59 @@ namespace SimpleTrainSimCld.UI {
 @enduml
 
 @startuml DesignCLD_Route
+!pragma ratio 0.6
 skinparam groupInheritance 2
 namespace SimpleTrainSimCld.Route {
     class Route {
         - {static} rotation = 0deg : int
         - /length : int
+
+        + get_slope(start, end) : double
     }
 
     class "Route point" as route_point {
         - position : int
         - altitude : int
-        - /slope : double
-        - /adhesion : double
+
+        + get_position() : int
+        + get_altitude() : int
     }
 
     class Environment {
         - /adhesion_modifier : double
+
+        + get_adhesion_modifier() : double
     }
 
     class Dampness {
         - track_dampness : int {0-100}
+
+        + get_dampness() : int
+        + change_dampness(value) : void
     }
 
     class Temperature {
-        - temperature : double
+        - value : double
+
+        + get_value() : double
+        + change_value(value) : void
     }
 
     class Wind {
         - strength : int
         - direction : int
+
+        + get_strength() : int
+        + get_direction() : int
+        + change_strength(speed) : void
+        + change_direction(deg) : void
     }
 
     class Leaves {
-        - leaf_coverage : int {0-100}
+        - coverage : int {0-100}
+
+        + get_coverage() : int
+        + change_coverage(value) : int
     }
 
     Route "1" *-down- "*" route_point : consists of >
@@ -168,21 +229,28 @@ namespace SimpleTrainSimCld.Route {
 @enduml
 
 @startuml DesignCLD_Physics
+!pragma ratio 0.6
 skinparam groupInheritance 2
 namespace SimpleTrainSimCld.Physics {
     class "Physical force" as physical_force
 
     class Gravity {
         - {static} acceleration = 9.81m/s<sup>2</sup> : double
+    
+        + calculate_effect(slope) : double
     }
 
     class "Aerodynamic drag" as aerodynamic_drag {
         - {static} drag_per_speed_modifier : double
+
+        + calculate_effect(speed) : double
     }
 
     class "Mechanical resistance" as mechanical_resistance {
         - min_bearing_friction : double
         - max_bearing_friction : double
+
+        + calculate_effect(speed, axles) : double
     }
 
     class "Rolling resistance" as rolling_resistance {}
