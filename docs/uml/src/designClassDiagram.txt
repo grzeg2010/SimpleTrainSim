@@ -69,6 +69,9 @@ namespace SimpleTrainSimCld.Train {
         + get_weight() : int
         + get_axles_count() : int
         + get_speed() : double
+        + get_acceleration() : double
+        + get_engine_power() : double
+        + get_braking_force() : double
         + change_power(throttle_lever_pos) : void
         + change_brake(brake_lever_pos) : void
     }
@@ -99,23 +102,33 @@ namespace SimpleTrainSimCld.Train {
         + calculate_torque() : double
     }
 
+    class Brake {
+        - max_force : double
+        - current_force : double
+
+        + calculate_force(brake_lever_pos) : double
+    }
+
     class "Deadman's switch" as deadmans_switch {
         - interval : int
-        - state : DmSwitchState
+        - state : DeadmansSwState
 
         - count() : void
         - activate_brakes() : void
         + acknowledge() : void
     }
 
-    enum DmSwitchState {
-        VIGILANT
+    enum DeadmansSwState {
+        DISABLED
+        VIGILANT_QUIET
+        VIGILANT_WARNING
         TRIGGERED
     }
-    DmSwitchState .. deadmans_switch
+    DeadmansSwState .. deadmans_switch
 
     Train "1" *-up- "1" deadmans_switch : secures <
     Train "1" *-up- "1" Engine : powers <
+    Train "1" *-up- "1" Brake : slows <
     Engine <|-up- electric_engine
     Engine <|-up- combustion_engine
     combustion_engine <|-- ce_electric_drive

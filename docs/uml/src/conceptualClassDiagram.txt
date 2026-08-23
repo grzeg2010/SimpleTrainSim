@@ -33,6 +33,7 @@ class Train {
 
 abstract class Engine {
     max power
+    current power
 }
 
 class "Electric engine" as electric_engine {}
@@ -44,6 +45,11 @@ class "Combustion engine" as combustion_engine {
 class "Electric drive CE" as ce_electric_drive {}
 
 class "Direct drive CE" as ce_direct_drive {}
+
+class Brake {
+    max force
+    current force
+}
 
 class HUD {
     layout
@@ -136,6 +142,7 @@ class Leaves {
 Train "1" *-- "1" HUD : displays >
 Train "1" *-up- "1" deadmans_switch : secures <
 Train "1" *-up- "1" Engine : powers <
+Train "1" *-up- "1" Brake : slows <
 Train "*" -right- "1" Route : rides on >
 Train "1" -left- "*" physical_force : impacts <
 HUD "1" *-- "*" Indicator : consists of >

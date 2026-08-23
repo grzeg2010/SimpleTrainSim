@@ -32,21 +32,24 @@ group Deadman's switch
     System -> Brake : Lock
 end
 
-group User
+group Driver
     System -> Driver : Notify
     Driver -> System : Acknowledge
 
     Driver -> Throttle : Set neutral position
     Throttle -> System : OK
-    Driver -> brake_lever : Set max position
-    Driver -> brake_lever : Set neutral position
+    Driver -> brake_lever : Set emergency position
     brake_lever -> System : OK
 end
 
 group Deadman's switch
-    System -> Throttle : Unlock
+    System -> Engine : Unlock
     System -> Brake : Unlock
-    System -> Brake : Release
+end
+
+group Driver
+    Driver -> brake_lever : Set normal position
+    brake_lever -> Brake : Release
 end
 
 @enduml
