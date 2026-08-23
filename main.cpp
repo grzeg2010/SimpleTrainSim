@@ -1,5 +1,5 @@
 /*
-SimpleTrainSim - Train HUD
+SimpleTrainSim - application immitating train HUD.
 Copyright (C) 2026 Grzegorz Śnieżko
 
 This program is free software: you can redistribute it and/or modify
