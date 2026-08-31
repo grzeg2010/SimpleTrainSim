@@ -16,24 +16,54 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-cmake_minimum_required(VERSION 3.19)
-project(SimpleTrainSim LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.16)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core)
+project(SimpleTrainSim VERSION 0.1 LANGUAGES CXX)
 
-qt_standard_project_setup()
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-qt_add_executable(SimpleTrainSim
-    main.cpp
+find_package(Qt6 REQUIRED COMPONENTS Quick)
+
+qt_standard_project_setup(REQUIRES 6.10)
+
+# Content of downloaded design from Figma to Qt or similar
+if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/importedcontent/CMakeLists.txt")
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/importedcontent)
+endif()
+
+include_directories(src)
+
+qt_add_executable(appSimpleTrainSim
+    src/main.cpp
+
 )
 
-target_link_libraries(SimpleTrainSim
-    PRIVATE
-        Qt::Core
+qt_add_qml_module(appSimpleTrainSim
+    URI SimpleTrainSim
+    QML_FILES
+        qml/GUI.qml
+        qml/Screen.ui.qml
+        SOURCES src/train.h src/train.cpp
 )
 
-install(TARGETS SimpleTrainSim
-    BUNDLE  DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+set_target_properties(appSimpleTrainSim PROPERTIES
+#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appSimpleTrainSim
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
+
+target_link_libraries(appSimpleTrainSim
+    PRIVATE Qt6::Quick
+)
+
+install(TARGETS appSimpleTrainSim
+    BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
