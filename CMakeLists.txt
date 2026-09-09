@@ -31,11 +31,10 @@ if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/importedcontent/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/importedcontent)
 endif()
 
-include_directories(src)
+include_directories(src src/model)
 
 qt_add_executable(appSimpleTrainSim
     src/main.cpp
-
 )
 
 qt_add_qml_module(appSimpleTrainSim
@@ -43,7 +42,8 @@ qt_add_qml_module(appSimpleTrainSim
     QML_FILES
         qml/GUI.qml
         qml/Screen.ui.qml
-        SOURCES src/train.h src/train.cpp
+        SOURCES src/model/train.h src/model/train.cpp
+        SOURCES src/model/engine.h src/model/engine.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

@@ -28,6 +28,12 @@ Rectangle {
     height: 720
     color: "#CECCAA"
 
+    Label {
+        id: lblTrainProperties
+        text: "Train weight: " + train.weight + "\nMax engine power: " + train.maxEnginePower
+        color: "#333333"
+    }
+
     Button {
         id: button
         text: qsTr("Horn")

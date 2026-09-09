@@ -30,6 +30,8 @@ ApplicationWindow {
 
     Train {
         id: train
+        weight: 5
+        maxEnginePower: 15
         onHorn: useTime => {
             lblUseTime.text = useTime
             popup.open();
