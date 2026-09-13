@@ -7,7 +7,7 @@ Simple Qt application designed to simulate realistic train physics and display c
 ### Application
 
 - C++
-- Qt Core/QML
+- Qt Quick/QML
 
 ### Documentation
 
@@ -47,3 +47,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
+
+## AI Usage
+Google Gemini and Claude were used at the beginning of the project (up to commit [b98b1c1](https://github.com/grzeg2010/SimpleTrainSim/commit/b98b1c18c841f540ec9e1963a7887b7a83db010b)):
+- tips for making LaTeX front page and formatting
+- documentation tips (like using FR and NFR IDs)
+- some UML diagram ideas
+- checking business domain consistency in project documentation
