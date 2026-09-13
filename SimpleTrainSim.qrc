@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/GUI.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>qml/SimulationForm.ui.qml</file>
+        <file>qml/Simulation.qml</file>
+    </qresource>
+</RCC>

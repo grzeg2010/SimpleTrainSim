@@ -18,15 +18,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import QtQuick 2.15
 import QtQuick.Controls
-import SimpleTrainSim
 
 Rectangle {
-    property Train train: null
-
     id: rectangle
     width: 1280
     height: 720
     color: "#CECCAA"
+
+    property var throttle_elem: throttleLever
+    property real engine_power: 0.0
 
     Label {
         id: lblTrainProperties
@@ -34,16 +34,30 @@ Rectangle {
         color: "#333333"
     }
 
-    Button {
-        id: button
-        text: qsTr("Horn")
+    Column {
         anchors.centerIn: parent
 
-        Connections {
-            target: button
-            function onClicked() {
-                train.useHorn();
+        Label {
+            id: txtThrottlePos
+            text: "Throttle: " + throttleLever.value
+        }
+
+        Slider {
+            id: throttleLever
+            from: 0
+            to: 100
+            stepSize: 1
+            orientation: Qt.Vertical
+
+            Connections {
+                target: throttleLever
+                function onValueChanged() { updateThrottle() }
             }
+        }
+
+        Label {
+            id: txtEnginePower
+            text: "Power: " + engine_power
         }
     }
 }

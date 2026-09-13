@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("SimpleTrainSim", "GUI");
+    engine.load(QUrl(QStringLiteral("qrc:/qml/GUI.qml")));
 
     return QGuiApplication::exec();
 }

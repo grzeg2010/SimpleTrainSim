@@ -21,31 +21,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Train::Train(QObject *parent)
     : QObject{parent}
 {
-    // this->m_weight = weight;
-    // this->m_axlesCount = axles_count;
-    // this->m_aerodynamicEfficiency = aerodynamic_efficiency;
-    this->m_engine = new Engine(this);
-    QObject::connect(this, &Train::horn, this, &Train::usedHorn);
+    this->m_engine = new ElectricEngine(this);
+
+    QObject::connect(this, &Train::throttlePosChanged, m_engine, &Engine::calculate_power);
+    QObject::connect(m_engine, &Engine::current_power, this, &Train::setCurrentPower);
 }
 
-void Train::useHorn()
+void Train::setThrottlePos(int position)
 {
-    emit horn(QDateTime::currentDateTime());
+    m_throttlePos = position;
+    emit throttlePosChanged(m_throttlePos);
 }
 
-void Train::addThrottlePos(int change)
+void Train::setBrakeLeverPos(int position)
 {
-    m_throttlePos += validateLeverChange(change, m_throttlePos);
-}
-
-void Train::addBrakeLeverPos(int change)
-{
-    m_brakeLeverPos += validateLeverChange(change, m_brakeLeverPos);
-}
-
-void Train::usedHorn(QDateTime useTime)
-{
-    qInfo() << "Horn has been used on" << useTime.toString(Qt::ISODate) << "!";
+    m_brakeLeverPos = position;
 }
 
 int Train::weight() { return m_weight; }
@@ -57,3 +47,9 @@ int Train::aerodynamicEfficiency() { return m_aerodynamicEfficiency; }
 
 int Train::maxEnginePower() { return m_engine->maxPower(); }
 void Train::setMaxEnginePower(int max_power) { m_engine->setMaxPower(max_power); }
+double Train::currentPower() { return m_currentPower; }
+void Train::setCurrentPower(double power)
+{
+    m_currentPower = power;
+    emit currentPowerChanged(power);
+}
