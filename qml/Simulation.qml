@@ -16,9 +16,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 import QtQuick 2.15
 import SimpleTrainSim
+import local.grzeg2010.train 0.1
+import local.grzeg2010.powerindicator 0.1
 
 Item {
-    property Train train: null
 
     Keys.onPressed: event => {
         switch (event.key) {
@@ -35,8 +36,8 @@ Item {
     }
 
     function updateThrottle() {
-        train.setThrottlePos(form.throttle_elem.value);
-        form.engine_power = Number.parseFloat(train.currentPower).toFixed(2);
+        Train.setThrottlePos(form.throttle_elem.value);
+        form.engine_power = Number.parseFloat(Power_indicator.currentPower).toFixed(2);
     }
 
     SimulationForm {

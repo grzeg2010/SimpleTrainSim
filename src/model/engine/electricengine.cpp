@@ -16,6 +16,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 #include "electricengine.h"
 
-ElectricEngine::ElectricEngine(QObject *parent)
-    : Engine{parent}
+ElectricEngine::ElectricEngine(int max_power, QObject *parent)
+    : Engine{max_power, parent}
 {}

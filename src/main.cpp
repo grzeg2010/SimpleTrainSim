@@ -19,11 +19,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+#include <QDebug>
+
+#include "powerindicator.h"
+#include "train.h"
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    auto *active_train = new Train(20000, 6, 50, 15000, &app);
+    //qmlRegisterSingletonType(QUrl("file:///absolute/path/SingletonType.qml"), "Qt.example.qobjectSingleton", 1, 0, "RegisteredSingleton");
+    //context->setContextProperty("train", active_train);
+    qmlRegisterSingletonInstance("local.grzeg2010.train", 0, 1, "Train", active_train);
+
+    qInfo() << active_train->getEngineAddress();
+
+    auto *power_indicator = new PowerIndicator(active_train->getEngineAddress(), active_train);
+    qmlRegisterSingletonInstance("local.grzeg2010.powerindicator", 0, 1, "Power_indicator", power_indicator);
+
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreationFailed,

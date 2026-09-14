@@ -18,13 +18,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "train.h"
 
-Train::Train(QObject *parent)
+Train::Train
+(
+    int weight, int axles_count, int aerodynamic_efficiency,
+    int max_engine_power,
+    QObject *parent
+)
     : QObject{parent}
 {
-    this->m_engine = new ElectricEngine(this);
+    this->m_weight = weight;
+    this->m_axlesCount = axles_count;
+    this->m_aerodynamicEfficiency = aerodynamic_efficiency;
+
+    this->m_engine = new ElectricEngine(max_engine_power, this);
 
     QObject::connect(this, &Train::throttlePosChanged, m_engine, &Engine::calculate_power);
-    QObject::connect(m_engine, &Engine::current_power, this, &Train::setCurrentPower);
 }
 
 void Train::setThrottlePos(int position)
@@ -45,11 +53,6 @@ int Train::throttlePos() { return m_throttlePos; }
 int Train::brakeLeverPos() { return m_brakeLeverPos; }
 int Train::aerodynamicEfficiency() { return m_aerodynamicEfficiency; }
 
+Engine* Train::getEngineAddress() { return m_engine; }
 int Train::maxEnginePower() { return m_engine->maxPower(); }
 void Train::setMaxEnginePower(int max_power) { m_engine->setMaxPower(max_power); }
-double Train::currentPower() { return m_currentPower; }
-void Train::setCurrentPower(double power)
-{
-    m_currentPower = power;
-    emit currentPowerChanged(power);
-}

@@ -26,15 +26,8 @@ ApplicationWindow {
     visible: true
     title: qsTr("SimpleTrainSim")
 
-    Train {
-        id: train
-        weight: 20000
-        maxEnginePower: 1500
-    }
-
     Simulation {
         id: simulationScreen
-        train: train
 
         anchors.centerIn: parent
     }

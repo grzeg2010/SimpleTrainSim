@@ -16,8 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 #include "combustionengine.h"
 
-CombustionEngine::CombustionEngine(QObject *parent)
-    : Engine{parent}
+CombustionEngine::CombustionEngine(int max_power, QObject *parent)
+    : Engine{max_power, parent}
 {}
 
 double CombustionEngine::fuelLevel()

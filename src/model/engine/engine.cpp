@@ -16,9 +16,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 #include "engine.h"
 
-Engine::Engine(QObject *parent)
+Engine::Engine(int max_power, QObject *parent)
     : QObject{parent}
-{}
+{
+    this->m_maxPower = max_power;
+}
 
 int Engine::maxPower() { return m_maxPower; }
 void Engine::setMaxPower(int max_power) { m_maxPower = max_power; }
@@ -27,6 +29,6 @@ double Engine::calculate_power(int throttle_pos)
 {
     double power = (double)throttle_pos / 100 * m_maxPower;
     emit current_power(power);
-    qInfo() << this << "calculate_power activated:" << power;
+    qInfo() << "calculate_power activated:" << power;
     return power;
 }

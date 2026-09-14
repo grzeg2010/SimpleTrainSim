@@ -23,7 +23,7 @@ class ElectricEngine : public Engine
 {
     Q_OBJECT
 public:
-    explicit ElectricEngine(QObject *parent = nullptr);
+    explicit ElectricEngine(int max_power, QObject *parent = nullptr);
 };
 
 #endif // ELECTRICENGINE_H

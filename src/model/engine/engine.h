@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 #define ENGINE_H
 
 #include <QObject>
-#include <QQmlEngine>
+#include <QDebug>
 
 class Engine : public QObject
 {
@@ -29,7 +29,7 @@ class Engine : public QObject
 
 public:
     //explicit Engine(int max_power, QObject *parent = nullptr);
-    explicit Engine(QObject *parent = nullptr);
+    explicit Engine(int max_power, QObject *parent = nullptr);
 
     int maxPower();
     void setMaxPower(int max_power);

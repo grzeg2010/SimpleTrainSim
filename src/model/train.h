@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 #define TRAIN_H
 
 #include <QObject>
-#include <QQmlEngine>
 #include <QDebug>
 
 #include "engine.h"
@@ -27,7 +26,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 class Train : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
 
     int m_weight;
     Q_PROPERTY(int weight READ weight WRITE setWeight FINAL)
@@ -41,16 +39,19 @@ class Train : public QObject
     int m_brakeLeverPos;
     Q_PROPERTY(int brakeLeverPos READ brakeLeverPos WRITE setBrakeLeverPos NOTIFY brakeLeverPosChanged FINAL)
 
-    int m_aerodynamicEfficiency;
+    int m_aerodynamicEfficiency; // percent 0-100
     Q_PROPERTY(int aerodynamicEfficiency READ aerodynamicEfficiency FINAL)
 
     Engine *m_engine;
     Q_PROPERTY(int maxEnginePower READ maxEnginePower WRITE setMaxEnginePower FINAL)
-    double m_currentPower;
-    Q_PROPERTY(int currentPower READ currentPower WRITE setCurrentPower NOTIFY currentPowerChanged FINAL)
+
 public:
-    //explicit Train(int weight, int axles_count, int aerodynamic_efficiency, int max_power, QObject *parent = nullptr);
-    explicit Train(QObject *parent = nullptr);
+    explicit Train
+    (
+        int weight, int axles_count, int aerodynamic_efficiency,
+        int max_engine_power,
+        QObject *parent = nullptr
+    );
 
     Q_INVOKABLE void setThrottlePos(int position);
     Q_INVOKABLE void setBrakeLeverPos(int position);
@@ -63,17 +64,14 @@ public:
     int brakeLeverPos();
     int aerodynamicEfficiency();
 
+    Engine* getEngineAddress();
     int maxEnginePower();
     void setMaxEnginePower(int max_power);
-    double currentPower();
+
 
 signals:
     void throttlePosChanged(int throttle_pos);
     void brakeLeverPosChanged();
-    void currentPowerChanged(double power);
-
-private slots:
-    void setCurrentPower(double power);
 };
 
 #endif // TRAIN_H

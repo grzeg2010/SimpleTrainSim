@@ -38,7 +38,7 @@ class CombustionEngine : public Engine
     void setMaxForceFuelConsumption(double value);
 
 public:
-    explicit CombustionEngine(QObject *parent = nullptr);
+    explicit CombustionEngine(int max_power, QObject *parent = nullptr);
 
     void add_fuel(double ammount);
     void burn_fuel(double current_power);
