@@ -31,8 +31,16 @@ Train::Train
     this->m_aerodynamicEfficiency = aerodynamic_efficiency;
 
     this->m_engine = new ElectricEngine(max_engine_power, this);
+    m_engine->moveToThread(&m_engineThread);
+    connect(&m_engineThread, &QThread::finished, m_engine, &QObject::deleteLater);
+    connect(this, &Train::throttlePosChanged, m_engine, &Engine::read_throttle_change);
+    m_engineThread.start();
+}
 
-    QObject::connect(this, &Train::throttlePosChanged, m_engine, &Engine::calculate_power);
+Train::~Train()
+{
+    m_engineThread.quit();
+    m_engineThread.wait();
 }
 
 void Train::setThrottlePos(int position)

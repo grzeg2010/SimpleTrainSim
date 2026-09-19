@@ -20,15 +20,35 @@ Engine::Engine(int max_power, QObject *parent)
     : QObject{parent}
 {
     this->m_maxPower = max_power;
+    this->m_target_power = 0;
+}
+
+void Engine::calculate_power(double deltaTimeInSeconds)
+{
+    if(m_current_power == m_target_power) return;
+
+    double responsivness = 2.5;
+
+    if(m_current_power > m_target_power)
+        responsivness = 8;
+
+    double difference = m_target_power - m_current_power;
+
+    m_current_power += difference * responsivness * deltaTimeInSeconds;
+
+    if(std::abs(m_target_power - m_current_power) < 1) {
+        m_current_power = m_target_power;
+    }
+
+    emit currentPowerChanged();
 }
 
 int Engine::maxPower() { return m_maxPower; }
 void Engine::setMaxPower(int max_power) { m_maxPower = max_power; }
 
-double Engine::calculate_power(int throttle_pos)
+double Engine::currentPower() { return m_current_power; }
+
+void Engine::read_throttle_change(int throttle_pos)
 {
-    double power = (double)throttle_pos / 100 * m_maxPower;
-    emit current_power(power);
-    qInfo() << "calculate_power activated:" << power;
-    return power;
+    m_target_power = throttle_pos / 100.0 * m_maxPower;
 }

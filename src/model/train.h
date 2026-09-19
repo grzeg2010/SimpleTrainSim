@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 #include <QObject>
 #include <QDebug>
+#include <QThread>
 
 #include "engine.h"
 #include "electricengine.h"
@@ -42,6 +43,7 @@ class Train : public QObject
     int m_aerodynamicEfficiency; // percent 0-100
     Q_PROPERTY(int aerodynamicEfficiency READ aerodynamicEfficiency FINAL)
 
+    QThread m_engineThread;
     Engine *m_engine;
     Q_PROPERTY(int maxEnginePower READ maxEnginePower WRITE setMaxEnginePower FINAL)
 
@@ -52,6 +54,8 @@ public:
         int max_engine_power,
         QObject *parent = nullptr
     );
+
+    ~Train();
 
     Q_INVOKABLE void setThrottlePos(int position);
     Q_INVOKABLE void setBrakeLeverPos(int position);

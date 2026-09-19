@@ -18,27 +18,35 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 #define ENGINE_H
 
 #include <QObject>
+#include <QChronoTimer>
 #include <QDebug>
+#include <QThread>
 
 class Engine : public QObject
 {
     Q_OBJECT
 
     int m_maxPower;
-    //Q_PROPERTY(int maxPower READ maxPower WRITE setMaxPower)
+    Q_PROPERTY(int maxPower READ maxPower NOTIFY maxPowerChanged FINAL)
+    double m_target_power;
+    double m_current_power;
+    Q_PROPERTY(double currentPower READ currentPower NOTIFY currentPowerChanged FINAL)
 
 public:
-    //explicit Engine(int max_power, QObject *parent = nullptr);
     explicit Engine(int max_power, QObject *parent = nullptr);
 
     int maxPower();
     void setMaxPower(int max_power);
 
+    double currentPower();
+
 signals:
-    void current_power(double value);
+    void maxPowerChanged();
+    void currentPowerChanged();
 
 public slots:
-    double calculate_power(int throttle_pos);
+    void calculate_power(double deltaTimeInSeconds);
+    void read_throttle_change(int throttle_pos);
 };
 
 #endif // ENGINE_H

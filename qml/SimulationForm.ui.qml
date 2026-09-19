@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import QtQuick 2.15
 import QtQuick.Controls
+import local.grzeg2010.trainengine 0.1
 
 Rectangle {
     id: rectangle
@@ -26,13 +27,9 @@ Rectangle {
     color: "#CECCAA"
 
     property var throttle_elem: throttleLever
-    property real engine_power: 0.0
-
-    Label {
-        id: lblTrainProperties
-        text: "Train weight: " + train.weight + "\nMax engine power: " + train.maxEnginePower
-        color: "#333333"
-    }
+    property alias powerIndicatorText: txtEnginePower.text
+    property alias powerIndicatorBar: pbEnginePower.value
+    focus: true
 
     Column {
         anchors.centerIn: parent
@@ -48,16 +45,16 @@ Rectangle {
             to: 100
             stepSize: 1
             orientation: Qt.Vertical
-
-            Connections {
-                target: throttleLever
-                function onValueChanged() { updateThrottle() }
-            }
         }
 
         Label {
             id: txtEnginePower
-            text: "Power: " + engine_power
+            text: "0.00"
+        }
+
+        ProgressBar {
+            id: pbEnginePower
+            value: 0.0
         }
     }
 }

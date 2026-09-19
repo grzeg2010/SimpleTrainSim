@@ -20,7 +20,6 @@ PowerIndicator::PowerIndicator(Engine *engine, QObject *parent)
     : QObject{parent}
 {
     m_engine = engine;
-    QObject::connect(m_engine, &Engine::current_power, this, &PowerIndicator::setCurrentPower);  
 }
 
 double PowerIndicator::currentPower() { return m_currentPower; }

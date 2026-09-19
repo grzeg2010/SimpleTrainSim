@@ -17,9 +17,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 import QtQuick 2.15
 import SimpleTrainSim
 import local.grzeg2010.train 0.1
-import local.grzeg2010.powerindicator 0.1
+import local.grzeg2010.trainengine 0.1
 
 Item {
+    property real currentPower: Train_engine.currentPower
+    readonly property int maxPower: Train_engine.maxPower
 
     Keys.onPressed: event => {
         switch (event.key) {
@@ -35,13 +37,17 @@ Item {
         }
     }
 
-    function updateThrottle() {
-        Train.setThrottlePos(form.throttle_elem.value);
-        form.engine_power = Number.parseFloat(Power_indicator.currentPower).toFixed(2);
+    Binding {
+        id: throttle_binding
+        target: Train;
+        property: "throttlePos"
+        value: form.throttle_elem.value
     }
 
     SimulationForm {
         id: form
         anchors.centerIn: parent
+        powerIndicatorText: "Power: " + currentPower.toLocaleString(Qt.locale(), "f", 2);
+        powerIndicatorBar: (currentPower / maxPower)
     }
 }

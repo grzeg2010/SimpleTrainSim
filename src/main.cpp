@@ -20,8 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <QQmlApplicationEngine>
 
 #include <QDebug>
+#include <QElapsedTimer>
 
-#include "powerindicator.h"
 #include "train.h"
 
 int main(int argc, char *argv[])
@@ -30,15 +30,21 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
+    auto *step_timer = new QChronoTimer(&app);
+    auto *delta_timer = new QElapsedTimer();
+    delta_timer->start();
+
     auto *active_train = new Train(20000, 6, 50, 15000, &app);
-    //qmlRegisterSingletonType(QUrl("file:///absolute/path/SingletonType.qml"), "Qt.example.qobjectSingleton", 1, 0, "RegisteredSingleton");
-    //context->setContextProperty("train", active_train);
     qmlRegisterSingletonInstance("local.grzeg2010.train", 0, 1, "Train", active_train);
 
-    qInfo() << active_train->getEngineAddress();
+    qmlRegisterSingletonInstance("local.grzeg2010.trainengine", 0, 1, "Train_engine", active_train->getEngineAddress());
 
-    auto *power_indicator = new PowerIndicator(active_train->getEngineAddress(), active_train);
-    qmlRegisterSingletonInstance("local.grzeg2010.powerindicator", 0, 1, "Power_indicator", power_indicator);
+    QObject::connect(step_timer, &QChronoTimer::timeout, active_train->getEngineAddress(), [=]() {
+        double delta_time = delta_timer->restart() / 1000.0;
+        active_train->getEngineAddress()->calculate_power(delta_time);
+    });
+    step_timer->setInterval(std::chrono::milliseconds(16));
+    step_timer->start();
 
     QObject::connect(
         &engine,
