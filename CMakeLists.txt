@@ -52,10 +52,7 @@ qt_add_qml_module(appSimpleTrainSim
         SOURCES src/model/engine/engine.h src/model/engine/engine.cpp
         SOURCES src/model/engine/electricengine.h src/model/engine/electricengine.cpp
         SOURCES src/model/engine/combustionengine.h src/model/engine/combustionengine.cpp
-        SOURCES src/controller/indicator/speedindicator.h src/controller/indicator/speedindicator.cpp
         RESOURCES SimpleTrainSim.qrc
-        SOURCES src/controller/indicator/powerindicator.h src/controller/indicator/powerindicator.cpp
-        SOURCES
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
