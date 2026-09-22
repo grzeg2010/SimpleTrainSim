@@ -39,9 +39,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 \usepackage[titletoc]{appendix} % for word "appendix" in the table of contents
 \usepackage{graphicx} % for UML diagrams
 \usepackage{verbatim} % for appending GNU GPL3 license
+\usepackage{listings} % for programming code
+\usepackage{xcolor}
 
 \titleformat{\chapter}[hang]{\normalfont\huge\bfseries}{\thechapter. }{0pt}{\huge}
 \titlespacing*{\chapter}{0pt}{-30pt}{20pt}
+
+% C++ code styling from https://www.overleaf.com/learn/latex/Code_listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
 
 % Custom title page
 \newcommand{\makecustomtitle}[5]{%
@@ -329,6 +358,82 @@ Simple Qt application designed to simulate realistic train physics and display c
     \caption{Sequence diagram - emergency brake}
     \vspace*{-3cm}
 \end{figure}
+
+\vspace*{3cm}
+\section{Maths}
+\subsection{Engine}
+Engine transform power to tractive force based on this formula:
+\[F = \frac{P}{|v|}\]
+where:
+\begin{itemize}
+    \item F - tractive force (N)
+    \item P - generated engine power (W)
+    \item v - absolute train speed (m/s)
+\end{itemize}
+
+Because train is given maximum tractive force $F_{max}$, engine power $P$ is set properly to not create a force bigger than maximum tractive force.
+\[P = F_{max} * v\]
+With formula above train would not generate power at $v=0$. Because of this, train engine assumes the speed doesn't fall below certain value.
+\lstinputlisting[language=C++]{code_snippets/engine_min_speed.cpp}
+
+Train has artificial speed limiter that smoothly decreases power output after reaching certain speed.
+\[DropFactor = max(0, 1 - \frac{v - v_{StartFade}}{FadeRange})\]
+\[P = F_{max} * v * DropFactor\]
+where
+\begin{itemize}
+    \item $v_{StartFade}$ - speed at which engine starts to decrease power
+    \item $FadeRange$ - the difference between maximum speed $v_{max}$ and $v_{StartFade}$
+\end{itemize}
+That means:
+\[v_{max} = v_{StartFade} + FadeRange\]
+
+Engine smoothly increases power
+\[P = \Delta P_{rate} * \Delta T\]
+where $\Delta T$ is the time between function calls taken from function argument:
+\begin{lstlisting}
+void Engine::calculate_force(..., double deltaTimeInSeconds)
+\end{lstlisting}
+$\Delta P_{rate}$ is engine variable that tells by how much each function call can increase the power.
+
+Finally, the tractive force that is available to read by other \verb|Q_OBJECTS| is calculated with previously mentioned formula $F = \frac{P}{|v|}$
+
+\subsection{Train}
+Train calculates net force as the difference between tractive force (calculated by the engine) and total resistance force.
+Total resitance force is calculated from Davis Formula.
+Constant values are taken from work \href{https://rosap.ntl.bts.gov/view/dot/79072}{"The Tractive Resistance of Electric Locomotives and Cars"} by W. J. Davis.
+\[R = A + B*v + C*v^2\]
+\[A = 1.3\frac{lbf}{ton} + \frac{29\frac{lbf}{ton}}{w}\]
+$w$ is weight per axle in US tons
+\[B = 0.045\frac{lbf}{ton}\]
+\[C = \frac{0.0005\frac{lbf}{ton} * a}{w * n}\]
+\begin{itemize}
+    \item $a$ - frontal area in $sqft$)
+    \item $w$ - weight per axle in US tons
+    \item $n$ - number of axles
+\end{itemize}
+
+Because program data is metric, $\frac{lbf}{ton}$ had to be converted to $\frac{N}{kg}$.
+\[1 lbf = 4.44822162 N\]
+\[1 (US)Ton = 0.9071847 (Metric)Ton\]
+\[1\frac{lbf}{ton} = 4.90332522\frac{N}{t}\]
+
+That gives:
+\[A \approx 6.374 + \frac{142.1964}{w * 0.9071847} \approx 6.374 + \frac{128.99}{w}\]
+\[B \approx 0.2206\]
+After convertin $mph$ to $km/h$ we can use:
+\[B \approx 0.1371\]
+$C$ needs to be recalculated
+
+Train acceleration is calculated using
+\[a = \frac{f}{m}\]
+\begin{itemize}
+    \item $f$ is net force in N
+    \item $m$ is train mass in kg
+\end{itemize}
+
+Speed is calculated using
+\[\Delta v = a * \Delta t\]
+$\Delta t$ is time since last function call
 
 \begin{appendices}
 

@@ -39,6 +39,8 @@ void Engine::calculate_force(double currentSpeedMps, double deltaTimeInSeconds)
     // Cap speed at 39 m/s
     double start_fade_speed = 35.0;
     double fade_range = 4.0;
+
+    // TODO is this conditional needed?
     if(current_speed < start_fade_speed)
         max_power_at_current_speed = m_max_force * current_speed;
     else
