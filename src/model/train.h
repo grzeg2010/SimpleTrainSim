@@ -43,6 +43,9 @@ class Train : public QObject
     int m_aerodynamicEfficiency; // percent 0-100
     Q_PROPERTY(int aerodynamicEfficiency READ aerodynamicEfficiency FINAL)
 
+    double m_speed;
+    Q_PROPERTY(double speed READ speed NOTIFY speedChanged FINAL)
+
     QThread m_engineThread;
     Engine *m_engine;
     Q_PROPERTY(int maxEnginePower READ maxEnginePower WRITE setMaxEnginePower FINAL)
@@ -51,7 +54,7 @@ public:
     explicit Train
     (
         int weight, int axles_count, int aerodynamic_efficiency,
-        int max_engine_power,
+        double max_engine_power,
         QObject *parent = nullptr
     );
 
@@ -67,15 +70,19 @@ public:
     int throttlePos();
     int brakeLeverPos();
     int aerodynamicEfficiency();
+    double speed();
 
     Engine* getEngineAddress();
     int maxEnginePower();
     void setMaxEnginePower(int max_power);
 
-
 signals:
     void throttlePosChanged(int throttle_pos);
     void brakeLeverPosChanged();
+    void speedChanged();
+
+public slots:
+    void calculate_speed(double deltaTimeInSeconds);
 };
 
 #endif // TRAIN_H

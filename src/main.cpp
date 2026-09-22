@@ -34,15 +34,20 @@ int main(int argc, char *argv[])
     auto *delta_timer = new QElapsedTimer();
     delta_timer->start();
 
-    auto *active_train = new Train(20000, 6, 50, 15000, &app);
+    auto *speed_delta_timer = new QElapsedTimer();
+    speed_delta_timer->start();
+
+    auto *active_train = new Train(80000, 6, 50, 4200000.0, &app); // Traxx
     qmlRegisterSingletonInstance("local.grzeg2010.train", 0, 1, "Train", active_train);
 
     qmlRegisterSingletonInstance("local.grzeg2010.trainengine", 0, 1, "Train_engine", active_train->getEngineAddress());
 
-    QObject::connect(step_timer, &QChronoTimer::timeout, active_train->getEngineAddress(), [=]() {
-        double delta_time = delta_timer->restart() / 1000.0;
-        active_train->getEngineAddress()->calculate_power(delta_time);
+    QObject::connect(step_timer, &QChronoTimer::timeout, active_train, [=]()
+    {
+        double delta_time = speed_delta_timer->restart() / 1000.0;
+        active_train->calculate_speed(delta_time);
     });
+
     step_timer->setInterval(std::chrono::milliseconds(16));
     step_timer->start();
 

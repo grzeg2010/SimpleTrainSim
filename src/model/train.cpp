@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Train::Train
 (
     int weight, int axles_count, int aerodynamic_efficiency,
-    int max_engine_power,
+    double max_engine_power,
     QObject *parent
 )
     : QObject{parent}
@@ -29,12 +29,11 @@ Train::Train
     this->m_weight = weight;
     this->m_axlesCount = axles_count;
     this->m_aerodynamicEfficiency = aerodynamic_efficiency;
+    this->m_speed = 0.0;
+    this->m_throttlePos = 0;
 
     this->m_engine = new ElectricEngine(max_engine_power, this);
-    m_engine->moveToThread(&m_engineThread);
-    connect(&m_engineThread, &QThread::finished, m_engine, &QObject::deleteLater);
     connect(this, &Train::throttlePosChanged, m_engine, &Engine::read_throttle_change);
-    m_engineThread.start();
 }
 
 Train::~Train()
@@ -60,7 +59,62 @@ int Train::axlesCount() { return m_axlesCount; }
 int Train::throttlePos() { return m_throttlePos; }
 int Train::brakeLeverPos() { return m_brakeLeverPos; }
 int Train::aerodynamicEfficiency() { return m_aerodynamicEfficiency; }
+double Train::speed() { return m_speed; }
 
 Engine* Train::getEngineAddress() { return m_engine; }
 int Train::maxEnginePower() { return m_engine->maxPower(); }
 void Train::setMaxEnginePower(int max_power) { m_engine->setMaxPower(max_power); }
+
+void Train::calculate_speed(double deltaTimeInSeconds)
+{
+    m_engine->calculate_force(m_speed, deltaTimeInSeconds);
+
+    double speed_kmh = std::abs(m_speed) * 3.6;
+
+    double weight_in_tonnes = m_weight / 1000.0;
+    double weight_per_axle = weight_in_tonnes / m_axlesCount;
+
+    double davis_A = 6.374 + (129 / weight_per_axle);
+    double davis_B = 0.1371 * speed_kmh;
+    double frontal_area = 12.3;
+    double davis_C = (0.009243 * frontal_area * speed_kmh * speed_kmh) / weight_in_tonnes;
+
+    double total_resistance_force = (davis_A + davis_B + davis_C) * weight_in_tonnes;
+
+    double tractive_force = m_engine->currentForce();
+
+    double net_force = 0.0;
+
+    if (m_speed >= 0.0)
+    {
+        net_force = tractive_force - total_resistance_force;
+    }
+
+    double acceleration = net_force / m_weight;
+
+    // TODO
+    // Train must not have negative speed
+    // Going forward will increase travelled distance by speed
+    // Going backward will decrease travelled distance by speed
+    // State of enum TRAIN_REVERSER must decide if distance will be increased or decreased
+    if (m_speed + acceleration < 0.0)
+    {
+        m_speed = 0.0;
+    }
+    else
+    {
+        m_speed += acceleration * deltaTimeInSeconds;
+    }
+
+    emit speedChanged();
+    qInfo() << "Engine force:" << tractive_force;
+}
+
+// USEFUL LINKS
+// https://en.wikipedia.org/wiki/Traction_(mechanics)
+// https://en.wikipedia.org/wiki/Tractive_effort
+// https://en.wikipedia.org/wiki/Adhesion_railway
+// https://en.wikipedia.org/wiki/Acceleration
+// https://en.wikipedia.org/wiki/Mass#Inertial_vs._gravitational_mass
+// https://www.combustion-engines.eu/pdf-184051-110080?filename=Determination%20of%20the.pdf
+// https://www.coalstonewcastle.com.au/physics/resistance/

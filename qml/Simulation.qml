@@ -22,14 +22,15 @@ import local.grzeg2010.trainengine 0.1
 Item {
     property real currentPower: Train_engine.currentPower
     readonly property int maxPower: Train_engine.maxPower
+    readonly property real currentSpeed: Train.speed * 3.6
 
     Keys.onPressed: event => {
         switch (event.key) {
             case Qt.Key_Z:
-                form.throttle_elem.value += 2;
+                form.throttle_elem.value += 1;
                 break;
             case Qt.Key_A:
-                form.throttle_elem.value -= 2;
+                form.throttle_elem.value -= 1;
                 break;
             case Qt.Key_Q:
                 form.throttle_elem.value = 0;
@@ -49,5 +50,7 @@ Item {
         anchors.centerIn: parent
         powerIndicatorText: "Power: " + currentPower.toLocaleString(Qt.locale(), "f", 2);
         powerIndicatorBar: (currentPower / maxPower)
+        speed: currentSpeed
+        strSpeed: currentSpeed.toLocaleString(Qt.locale(), "f", 2);
     }
 }

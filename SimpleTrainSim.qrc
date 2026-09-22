@@ -4,5 +4,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>qml/SimulationForm.ui.qml</file>
         <file>qml/Simulation.qml</file>
+        <file>qml/SpeedArc.ui.qml</file>
     </qresource>
 </RCC>

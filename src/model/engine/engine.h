@@ -26,26 +26,34 @@ class Engine : public QObject
 {
     Q_OBJECT
 
-    int m_maxPower;
+    double m_maxPower;
     Q_PROPERTY(int maxPower READ maxPower NOTIFY maxPowerChanged FINAL)
     double m_target_power;
     double m_current_power;
     Q_PROPERTY(double currentPower READ currentPower NOTIFY currentPowerChanged FINAL)
+    double m_current_force;
+    Q_PROPERTY(double currentForce READ currentForce NOTIFY currentForceChanged FINAL)
+    double m_max_force;
+
+    double m_throttle_pos;
 
 public:
-    explicit Engine(int max_power, QObject *parent = nullptr);
+    explicit Engine(double max_power, QObject *parent = nullptr);
 
     int maxPower();
     void setMaxPower(int max_power);
 
     double currentPower();
 
+    double currentForce();
+
 signals:
     void maxPowerChanged();
     void currentPowerChanged();
+    void currentForceChanged();
 
 public slots:
-    void calculate_power(double deltaTimeInSeconds);
+    void calculate_force(double currentSpeedMps, double deltaTimeInSeconds);
     void read_throttle_change(int throttle_pos);
 };
 

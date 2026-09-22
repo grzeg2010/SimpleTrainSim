@@ -14,32 +14,57 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+#include <algorithm>
+
 #include "engine.h"
 
-Engine::Engine(int max_power, QObject *parent)
+Engine::Engine(double max_power, QObject *parent)
     : QObject{parent}
 {
     this->m_maxPower = max_power;
-    this->m_target_power = 0;
+    this->m_current_power = 0.0;
+    this->m_target_power = 0.0;
+    this->m_current_force = 0.0;
+    this->m_max_force = 300000.0;
+    this->m_throttle_pos = 0.0;
 }
 
-void Engine::calculate_power(double deltaTimeInSeconds)
+void Engine::calculate_force(double currentSpeedMps, double deltaTimeInSeconds)
 {
-    if(m_current_power == m_target_power) return;
+    // Prevent 0km/h lock in double max_power_at_current_speed and dividing by 0 in double tractiveForce
+    double current_speed = std::max(0.8, std::abs(currentSpeedMps));
 
-    double responsivness = 2.5;
+    double max_power_at_current_speed;
 
-    if(m_current_power > m_target_power)
-        responsivness = 8;
+    // Cap speed at 39 m/s
+    double start_fade_speed = 35.0;
+    double fade_range = 4.0;
+    if(current_speed < start_fade_speed)
+        max_power_at_current_speed = m_max_force * current_speed;
+    else
+    {
+        double drop_factor = std::max(0.0, 1.0 - ((current_speed - start_fade_speed) / fade_range));
 
-    double difference = m_target_power - m_current_power;
+        max_power_at_current_speed = m_max_force * current_speed * drop_factor;
+    } // max speed 39 m/s
+    double power_limiter = std::min(m_maxPower, max_power_at_current_speed);
 
-    m_current_power += difference * responsivness * deltaTimeInSeconds;
+    double target_power = power_limiter * m_throttle_pos;
 
-    if(std::abs(m_target_power - m_current_power) < 1) {
-        m_current_power = m_target_power;
+    double powerChangeRate = 900000.0; // 900 kW/s
+    if (m_current_power < target_power) {
+        m_current_power += powerChangeRate * deltaTimeInSeconds;
+        if (m_current_power > target_power) m_current_power = target_power;
+    } else if (m_current_power > target_power) {
+        m_current_power -= powerChangeRate * deltaTimeInSeconds * 6.0;
+        if (m_current_power < target_power) m_current_power = target_power;
     }
 
+    double tractiveForce = m_current_power / current_speed;
+
+    m_current_force = std::min(m_max_force, tractiveForce);
+
+    emit currentForceChanged();
     emit currentPowerChanged();
 }
 
@@ -48,7 +73,9 @@ void Engine::setMaxPower(int max_power) { m_maxPower = max_power; }
 
 double Engine::currentPower() { return m_current_power; }
 
+double Engine::currentForce() { return m_current_force; }
+
 void Engine::read_throttle_change(int throttle_pos)
 {
-    m_target_power = throttle_pos / 100.0 * m_maxPower;
+    m_throttle_pos = throttle_pos / 100.0;
 }
