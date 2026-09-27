@@ -18,11 +18,14 @@ import QtQuick 2.15
 import SimpleTrainSim
 import local.grzeg2010.train 0.1
 import local.grzeg2010.trainengine 0.1
+import local.grzeg2010.trainbrakes 0.1
 
 Item {
-    property real currentPower: Train_engine.currentPower
+    readonly property real currentPower: Train_engine.currentPower
     readonly property int maxPower: Train_engine.maxPower
     readonly property real currentSpeed: Train.speed * 3.6
+    readonly property real brakePipe: Train_brakes.brakePipe
+    readonly property real brakeCylinder: Train_brakes.cylinder
 
     Keys.onPressed: event => {
         switch (event.key) {
@@ -45,6 +48,13 @@ Item {
         value: form.throttle_elem.value
     }
 
+    Binding {
+        id: brakesLever_binding
+        target: Train;
+        property: "brakeLeverPos"
+        value: form.brakesLever_item.value
+    }
+
     SimulationForm {
         id: form
         anchors.centerIn: parent
@@ -52,5 +62,7 @@ Item {
         powerIndicatorBar: (currentPower / maxPower)
         speed: currentSpeed
         strSpeed: currentSpeed.toLocaleString(Qt.locale(), "f", 2);
+        brakePipeText: "BP: " + brakePipe.toLocaleString(Qt.locale(), "f", 2)
+        brakeCylinderText: "Cylinder: " + brakeCylinder.toLocaleString(Qt.locale(), "f", 2)
     }
 }

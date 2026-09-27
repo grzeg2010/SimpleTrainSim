@@ -34,6 +34,8 @@ Train::Train
 
     this->m_engine = new ElectricEngine(max_engine_power, this);
     connect(this, &Train::throttlePosChanged, m_engine, &Engine::read_throttle_change);
+
+    this-> m_brakes = new Brakes(this);
 }
 
 Train::~Train()
@@ -65,9 +67,12 @@ Engine* Train::getEngineAddress() { return m_engine; }
 int Train::maxEnginePower() { return m_engine->maxPower(); }
 void Train::setMaxEnginePower(int max_power) { m_engine->setMaxPower(max_power); }
 
+Brakes* Train::getBrakesAddress() { return m_brakes; }
+
 void Train::calculate_speed(double deltaTimeInSeconds)
 {
     m_engine->calculate_force(m_speed, deltaTimeInSeconds);
+    m_brakes->updateBrakes(m_brakeLeverPos, deltaTimeInSeconds);
 
     double speed_kmh = std::abs(m_speed) * 3.6;
 
@@ -78,8 +83,9 @@ void Train::calculate_speed(double deltaTimeInSeconds)
     double davis_B = 0.1371 * speed_kmh;
     double frontal_area = 12.3;
     double davis_C = (0.009243 * frontal_area * speed_kmh * speed_kmh) / weight_in_tonnes;
+    double braking_force = m_brakes->cylinder() * 1000;
 
-    double total_resistance_force = (davis_A + davis_B + davis_C) * weight_in_tonnes;
+    double total_resistance_force = (davis_A + davis_B + davis_C + braking_force) * weight_in_tonnes;
 
     double tractive_force = m_engine->currentForce();
 

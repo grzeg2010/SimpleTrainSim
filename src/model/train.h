@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 #include <QDebug>
 #include <QThread>
 
+#include "brakes.h"
 #include "engine.h"
 #include "electricengine.h"
 
@@ -50,6 +51,8 @@ class Train : public QObject
     Engine *m_engine;
     Q_PROPERTY(int maxEnginePower READ maxEnginePower WRITE setMaxEnginePower FINAL)
 
+    Brakes *m_brakes;
+
 public:
     explicit Train
     (
@@ -75,6 +78,8 @@ public:
     Engine* getEngineAddress();
     int maxEnginePower();
     void setMaxEnginePower(int max_power);
+
+    Brakes* getBrakesAddress();
 
 signals:
     void throttlePosChanged(int throttle_pos);

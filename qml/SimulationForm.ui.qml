@@ -28,11 +28,14 @@ Rectangle {
     color: "#F8F1E6"
     focus: true
 
-    property var throttle_elem: throttleLever
+    property alias throttle_elem: throttleLever
     property alias powerIndicatorText: txtEnginePower.text
     property alias powerIndicatorBar: pbEnginePower.value
     property alias speed: arcSpeed.speed
     property alias strSpeed: arcSpeed.strSpeed
+    property alias brakesLever_item: brakesLever
+    property alias brakePipeText: txtBrakePipe.text
+    property alias brakeCylinderText: txtBrakeCylinder.text
 
     Row {
         anchors.centerIn: parent
@@ -95,6 +98,29 @@ Rectangle {
         SpeedArc {
             id: arcSpeed
             maxSpeed: 160
+        }
+
+        Column {
+            Label {
+                id: txtBrakePos
+                text: "Brakes lever: " + brakesLever.value
+            }
+
+            Slider {
+                id: brakesLever
+                from: 0
+                to: 100
+                stepSize: 1
+                orientation: Qt.Vertical
+            }
+
+            Label {
+                id: txtBrakePipe
+            }
+
+            Label {
+                id: txtBrakeCylinder
+            }
         }
     }
 }

@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("local.grzeg2010.train", 0, 1, "Train", active_train);
 
     qmlRegisterSingletonInstance("local.grzeg2010.trainengine", 0, 1, "Train_engine", active_train->getEngineAddress());
+    qmlRegisterSingletonInstance("local.grzeg2010.trainbrakes", 0, 1, "Train_brakes", active_train->getBrakesAddress());
 
     QObject::connect(step_timer, &QChronoTimer::timeout, active_train, [=]()
     {
