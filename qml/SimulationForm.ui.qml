@@ -35,7 +35,9 @@ Rectangle {
     property alias strSpeed: arcSpeed.strSpeed
     property alias brakesLever_item: brakesLever
     property alias brakePipeText: txtBrakePipe.text
+    property alias brakePipePercentage: brakeGauge.bpPercentage
     property alias brakeCylinderText: txtBrakeCylinder.text
+    property alias brakeCylinderPercentage: brakeGauge.cylinderPercentage
 
     Row {
         anchors.centerIn: parent
@@ -120,6 +122,12 @@ Rectangle {
 
             Label {
                 id: txtBrakeCylinder
+            }
+        }
+
+        Column {
+            BrakeGauge {
+                id: brakeGauge
             }
         }
     }

@@ -63,6 +63,8 @@ Item {
         speed: currentSpeed
         strSpeed: currentSpeed.toLocaleString(Qt.locale(), "f", 2);
         brakePipeText: "BP: " + brakePipe.toLocaleString(Qt.locale(), "f", 2)
+        brakePipePercentage: brakePipe / 10
         brakeCylinderText: "Cylinder: " + brakeCylinder.toLocaleString(Qt.locale(), "f", 2)
+        brakeCylinderPercentage: brakeCylinder / 10
     }
 }

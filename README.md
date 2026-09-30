@@ -49,8 +49,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
 
 ## AI Usage
-Google Gemini and Claude were used at the beginning of the project (up to commit [b98b1c1](https://github.com/grzeg2010/SimpleTrainSim/commit/b98b1c18c841f540ec9e1963a7887b7a83db010b)):
+LLMs were used for:
 - tips for making LaTeX front page and formatting
 - documentation tips (like using FR and NFR IDs)
 - some UML diagram ideas
 - checking business domain consistency in project documentation
+- physics consultation

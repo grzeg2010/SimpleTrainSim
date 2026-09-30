@@ -113,7 +113,7 @@ void Train::calculate_speed(double deltaTimeInSeconds)
     }
 
     emit speedChanged();
-    qInfo() << "Engine force:" << tractive_force;
+    // qInfo() << "Engine force:" << tractive_force;
 }
 
 // USEFUL LINKS

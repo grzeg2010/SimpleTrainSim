@@ -66,7 +66,7 @@ double Brakes::cylinder()
 
 void Brakes::updateBrakes(int brake_lever_pos, double delta_time)
 {
-    int target_pipe_charge = m_brake_pipe_max_charge - (m_brake_pipe_max_charge * brake_lever_pos / 100.0);
+    double target_pipe_charge = m_brake_pipe_max_charge - (m_brake_pipe_max_charge * brake_lever_pos / 100.0);
     if(m_brake_pipe > target_pipe_charge)
     {
         m_brake_pipe -= brake_lever_pos / 50.0 * delta_time;
