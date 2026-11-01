@@ -1,5 +1,8 @@
 # Simple train simulator
 
+> [!NOTE]
+> Work in progress
+
 Simple Qt application designed to simulate realistic train physics and display corresponding data in GUI. GUI is styled after train Head-Up Display (HUD).
 
 ## Technology used
