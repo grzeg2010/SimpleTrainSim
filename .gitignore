@@ -101,6 +101,7 @@ CMakeLists.txt.user*
 
 ## Core LaTeX auxiliary files
 *.aux
+*.dvi
 *.fdb_latexmk
 *.fls
 *.glg
@@ -139,6 +140,7 @@ _minted*/
 ## PDF
 *.pdf
 
-## PlantUML exports
-docs/uml/*.png
-docs/uml/*.svg
+## PlantUML
+docs/uml/*.jar
+docs/uml/build/*.png
+docs/uml/build/*.svg

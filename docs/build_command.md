@@ -1,0 +1,3 @@
+```bash
+pdflatex documentation.tex
+```
