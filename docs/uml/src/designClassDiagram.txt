@@ -20,17 +20,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 !pragma ratio 0.6
 skinparam groupInheritance 2
 
-namespace QtCore [[Accounting_Diagram.png]] {
+namespace QtCore {
     class QObject << (F, #2CDE85) Framework >>
+}
+
+namespace QtQuick {
+    class HUD
 }
 
 namespace SimpleTrainSimCld {
     namespace Train {
         class Train
-    }
-
-    namespace UI {
-        class HUD
     }
 
     namespace Route {
@@ -42,11 +42,11 @@ namespace SimpleTrainSimCld {
     }
 
     SimpleTrainSimCld.Train.Train "1" -left-  "*" SimpleTrainSimCld.Physics.physical_force : impacts <
-    SimpleTrainSimCld.Train.Train "1" *-down- "1" SimpleTrainSimCld.UI.HUD : displays >
+    SimpleTrainSimCld.Train.Train "1" *-down- "1" QtQuick.HUD : displays >
     SimpleTrainSimCld.Train.Train "*" -right- "1" SimpleTrainSimCld.Route.Route : rides on >
 
     SimpleTrainSimCld.Train.Train            -up-|> QtCore.QObject
-    SimpleTrainSimCld.UI.HUD                 -up-|> QtCore.QObject
+    QtQuick.HUD                               -up-|> QtCore.QObject
     SimpleTrainSimCld.Route.Route            -up-|> QtCore.QObject
     SimpleTrainSimCld.Physics.physical_force -up-|> QtCore.QObject
 }
